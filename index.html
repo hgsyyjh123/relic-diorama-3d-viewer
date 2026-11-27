@@ -2,396 +2,599 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>파손 성물 세례·축복 디오라마 — 3D 모형 스튜디오 & 전시 시안</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>파손 성물 디오라마 — 3D 유물 모형 스튜디오 (S23 모바일·PC 겸용)</title>
   <style>
     :root {
       --bg: #0b0a09;
       --card: #151311;
-      --card-alt: #1d1a17;
-      --border: #2c2723;
+      --card-alt: #1e1b18;
+      --border: #2e2823;
       --text: #f3eee6;
-      --muted: #a39a8e;
-      --accent: #cfa04c;
-      --accent-fg: #120f0a;
+      --muted: #a59b8f;
+      --accent: #d2a24c;
+      --accent-fg: #120e09;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body {
       background: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Malgun Gothic", sans-serif;
-      line-height: 1.45;
-      padding: 14px;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Desktop Layout (>= 921px) */
+    .app-shell {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
       min-height: 100vh;
     }
-    .container { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
-    .header {
+    .top-bar {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 13px 18px;
+      border-radius: 12px;
+      padding: 10px 14px;
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
+      flex-shrink: 0;
     }
-    .title-wrap h1 { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
-    .title-wrap p { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
-    .tab-btn {
-      padding: 8px 14px;
-      border-radius: 9px;
-      font-size: 12.5px;
+    .brand-title { font-size: 15px; font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .brand-sub { font-size: 11.5px; color: var(--muted); }
+    .mode-switch { display: flex; gap: 5px; flex-shrink: 0; }
+    .mode-btn {
+      padding: 6px 11px;
+      border-radius: 8px;
+      font-size: 12px;
       font-weight: 600;
-      cursor: pointer;
       border: 1px solid var(--border);
       background: var(--card-alt);
       color: var(--muted);
-      transition: all 0.15s ease;
+      cursor: pointer;
     }
-    .tab-btn.active { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
-    .grid-main { display: grid; grid-template-columns: 1fr 380px; gap: 12px; align-items: start; }
-    @media (max-width: 960px) { .grid-main { grid-template-columns: 1fr; } }
-    .viewport-card {
+    .mode-btn.active { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr 390px;
+      gap: 12px;
+      flex: 1;
+      min-height: 0;
+    }
+    .viewport-wrap {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
-      overflow: hidden;
       position: relative;
+      overflow: hidden;
+      min-height: 560px;
+      display: flex;
     }
     #glCanvas {
       width: 100%;
-      height: 580px;
+      height: 100%;
       display: block;
       cursor: grab;
       touch-action: none;
     }
-    @media (max-width: 640px) { #glCanvas { height: 400px; } }
     #glCanvas:active { cursor: grabbing; }
-    .cam-bar {
+
+    /* Floating Viewport Overlays */
+    .hud-top {
       position: absolute;
-      top: 12px;
-      left: 12px;
-      right: 12px;
+      top: 8px;
+      left: 8px;
+      right: 8px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 6px;
       pointer-events: none;
     }
-    .cam-btn, .preset-btn {
+    .cam-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
       pointer-events: auto;
-      padding: 6px 10px;
+    }
+    .chip-btn {
+      padding: 5px 8.5px;
       border-radius: 7px;
-      font-size: 11.5px;
-      background: rgba(20, 18, 16, 0.88);
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(18, 16, 14, 0.84);
       backdrop-filter: blur(6px);
       border: 1px solid var(--border);
       color: var(--text);
       cursor: pointer;
+      white-space: nowrap;
     }
-    .cam-btn:hover, .preset-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .preset-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
-    .preset-btn { text-align: center; padding: 6px 4px; font-weight: 600; background: var(--card-alt); }
-    .status-pill {
+    .chip-btn:hover, .chip-btn:active { border-color: var(--accent); color: var(--accent); }
+    .chip-accent { background: rgba(210, 162, 76, 0.92); color: #120e09; border-color: var(--accent); }
+    .hud-bottom {
       position: absolute;
-      bottom: 12px;
-      left: 12px;
-      right: 12px;
-      padding: 6px 11px;
-      border-radius: 7px;
-      font-size: 11px;
-      background: rgba(12, 11, 10, 0.86);
-      border: 1px solid var(--border);
+      bottom: 8px;
+      left: 8px;
+      right: 8px;
+      padding: 5px 9px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      background: rgba(12, 10, 9, 0.80);
+      border: 1px solid rgba(255,255,255,0.08);
       color: var(--muted);
       font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
       pointer-events: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .panel {
+
+    /* Control Dock (Tabbed for Zero-Scroll S23 Mobile + Clean Desktop Inspector!) */
+    .control-dock {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .subtab-bar {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      background: #100e0d;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .subtab-btn {
+      padding: 9px 2px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      background: transparent;
+      border: none;
+      border-bottom: 2.5px solid transparent;
+      cursor: pointer;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .subtab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      background: rgba(210, 162, 76, 0.08);
+    }
+    .dock-body {
+      padding: 12px 14px;
+      overflow-y: auto;
+      flex: 1;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      font-size: 12px;
-      max-height: 580px;
-      overflow-y: auto;
     }
-    @media (max-width: 960px) { .panel { max-height: none; } }
-    .sec-box {
+    .pane-sec { display: none; flex-direction: column; gap: 10px; }
+    .pane-sec.active { display: flex; }
+
+    .preset-grid { display: grid; grid-template-columns: 1fr; gap: 6px; }
+    .preset-card {
+      padding: 9px 11px;
+      border-radius: 9px;
       background: var(--card-alt);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 11px;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-    .sec-title {
-      font-weight: 700;
-      color: var(--accent);
-      font-size: 12px;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-    .ctrl-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .ctrl-group { display: flex; flex-direction: column; gap: 2px; }
-    .ctrl-label { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; }
-    .ctrl-val { color: var(--text); font-family: ui-monospace, monospace; }
-    input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; height: 16px; }
-    .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
-    .btn {
-      padding: 8.5px 10px;
-      border-radius: 8px;
       font-size: 12px;
       font-weight: 600;
+    }
+    .preset-card span.sub { font-size: 10.5px; color: var(--muted); font-weight: 400; }
+    .preset-card.recommended { border-color: rgba(210, 162, 76, 0.55); }
+    .preset-card:active, .preset-card:hover { border-color: var(--accent); background: #25201b; }
+
+    .slider-item {
+      background: var(--card-alt);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 8px 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .slider-head { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; color: var(--muted); }
+    .slider-val { color: var(--accent); font-family: ui-monospace, monospace; font-weight: 700; font-size: 11.5px; }
+    input[type="range"] {
+      width: 100%;
+      height: 24px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .slider-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-alt);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 8px 11px;
+      font-size: 12px;
+    }
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .btn-full {
+      padding: 9px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
       cursor: pointer;
       border: 1px solid var(--border);
       text-align: center;
       text-decoration: none;
+      display: inline-block;
     }
-    .btn-primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
-    .btn-sec { background: var(--card-alt); color: var(--text); }
-    .hidden { display: none !important; }
-    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
-    .img-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .btn-gold { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+    .btn-dark { background: var(--card-alt); color: var(--text); }
+
+    /* Tab 2 Gallery */
+    .renders-view { display: none; flex-direction: column; gap: 12px; padding-bottom: 24px; }
+    .renders-view.active { display: flex; }
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px; }
+    .img-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
     .img-card img { width: 100%; display: block; aspect-ratio: 16/9; object-fit: cover; }
-    .img-cap { padding: 12px 14px; }
-    .img-cap h3 { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-    .img-cap p { font-size: 12px; color: var(--muted); }
-    .plaque-box { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-top: 4px; }
-    .plaque-box h2 { font-size: 15px; color: var(--accent); margin-bottom: 8px; }
-    .plaque-box p { font-size: 13px; color: var(--text); line-height: 1.7; margin-bottom: 8px; }
+    .img-cap { padding: 10px 13px; }
+    .img-cap h3 { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+    .img-cap p { font-size: 11.5px; color: var(--muted); }
+    .plaque-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+    .plaque-box h2 { font-size: 14px; color: var(--accent); margin-bottom: 6px; }
+    .plaque-box p { font-size: 12.5px; line-height: 1.65; margin-bottom: 6px; }
+
+    /* =========================================================================
+       SAMSUNG GALAXY S23 & MOBILE OPTIMIZATION (<= 920px: 360x780 Zero-Scroll Split!)
+       ========================================================================= */
+    @media (max-width: 920px) {
+      body { overflow: hidden; }
+      .app-shell {
+        height: 100dvh;
+        max-height: 100dvh;
+        padding: 6px;
+        gap: 6px;
+      }
+      .app-shell.scroll-mode {
+        height: auto;
+        max-height: none;
+        overflow-y: auto;
+      }
+      body.scroll-body { overflow-y: auto; }
+      .top-bar { padding: 7px 10px; border-radius: 10px; }
+      .brand-title { font-size: 13px; }
+      .brand-sub { display: none; }
+      .mode-btn { padding: 5px 9px; font-size: 11px; }
+
+      .workspace {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+        min-height: 0;
+      }
+      .viewport-wrap {
+        min-height: 0;
+        height: 49dvh;
+        flex-shrink: 0;
+        border-radius: 11px;
+      }
+      .cam-strip {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        max-width: 76vw;
+        scrollbar-width: none;
+      }
+      .cam-strip::-webkit-scrollbar { display: none; }
+      .chip-btn { padding: 4px 7px; font-size: 10.5px; }
+      .hud-bottom { font-size: 9.8px; padding: 4px 7px; bottom: 6px; left: 6px; right: 6px; }
+
+      .control-dock {
+        flex: 1;
+        min-height: 0;
+        border-radius: 11px;
+      }
+      .subtab-btn { padding: 8px 1px; font-size: 10.5px; letter-spacing: -0.03em; }
+      .dock-body { padding: 8px 10px; gap: 7px; }
+      .slider-item { padding: 6px 9px; gap: 2px; }
+      input[type="range"] { height: 22px; }
+      .slider-2col { grid-template-columns: 1fr 1fr; gap: 6px; }
+    }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header class="header">
-      <div class="title-wrap">
-        <h1>전투기 오폭 파손 성물 — 세례·축복 디오라마 3D 모형 & 전시 시안</h1>
-        <p>마우스 드래그 · 스마트폰 터치 360° 회전 · 가시 면류관 & 장미 화관 높이·기울기·위치 개별 조절 · 블렌더(.OBJ) 추출</p>
+  <div id="appShell" class="app-shell">
+    <header class="top-bar">
+      <div style="min-width:0;">
+        <div class="brand-title">파손 성물 3D 디오라마 스튜디오</div>
+        <div class="brand-sub">실제 파손 유물 실루엣 3D 메쉬 · 터치 360° 회전 · 가시관·화관 입체 배치</div>
       </div>
-      <div class="tabs">
-        <button id="tabBtn3d" class="tab-btn active">실시간 3D 모형 스튜디오</button>
-        <button id="tabBtnRenders" class="tab-btn">스튜디오 렌더링 시안 & 전시 설명문</button>
+      <div class="mode-switch">
+        <button id="tabBtn3d" class="mode-btn active">3D 모형</button>
+        <button id="tabBtnRenders" class="mode-btn">시안·설명문</button>
       </div>
     </header>
 
-    <!-- TAB 1: Interactive WebGL2 3D Modeler -->
-    <section id="sec3d" class="grid-main">
-      <div class="viewport-card">
+    <!-- TAB 1: S23 Split-Screen 3D Viewport + Thumb Tabbed Dock -->
+    <main id="sec3d" class="workspace">
+      <div class="viewport-wrap">
         <canvas id="glCanvas" width="960" height="620"></canvas>
-        <div class="cam-bar">
-          <button data-cam="closeup" class="cam-btn">정면 1.1m 눈높이</button>
-          <button data-cam="full" class="cam-btn">전신 1.2m 원목스탠드</button>
-          <button data-cam="under" class="cam-btn">하부 앙각 (손바닥 확인)</button>
-          <button data-cam="side" class="cam-btn">측면 실루엣</button>
-          <button data-cam="quarter" class="cam-btn">3/4 입체 뷰</button>
+        <div class="hud-top">
+          <div class="cam-strip">
+            <button data-cam="closeup" class="chip-btn">정면</button>
+            <button data-cam="full" class="chip-btn">1.2m전신</button>
+            <button data-cam="quarter" class="chip-btn">3/4뷰</button>
+            <button data-cam="side" class="chip-btn">측면</button>
+            <button data-cam="under" class="chip-btn">손바닥앙각</button>
+          </div>
+          <div style="display:flex;gap:4px;pointer-events:auto;">
+            <button id="btnQuickObj" class="chip-btn chip-accent" title="블렌더 .OBJ 저장">.OBJ</button>
+            <button id="btnQuickPng" class="chip-btn" title="화면 캡처">PNG</button>
+          </div>
         </div>
-        <div id="statusBadge" class="status-pill">
-          예수님 왼손: 손바닥 하향(0°) · 합장손: 52° · 가시면류관: 83cm · 장미화관: 83cm
+        <div id="statusBadge" class="hud-bottom">
+          추천배치 ① 세운 가시관 관통 · 왼손 파편유물(-35°) · 합장손(50°)
         </div>
       </div>
 
-      <aside class="panel">
-        <!-- Quick Layout Presets -->
-        <div>
-          <div style="font-size:11px;color:var(--muted);margin-bottom:5px;display:flex;justify-content:space-between;">
-            <span>빠른 배치 프리셋</span>
-            <button id="btnReset" style="background:none;border:none;color:var(--accent);text-decoration:underline;cursor:pointer;font-size:11px;">전체 기본값 복원</button>
-          </div>
-          <div class="preset-row">
-            <button data-preset="split" class="preset-btn">① 좌우 분리 기본</button>
-            <button data-preset="floatThorn" class="preset-btn">② 가시관 공중부양</button>
-            <button data-preset="nested" class="preset-btn">③ 화관·가시관 중첩</button>
-          </div>
-        </div>
+      <!-- Bottom / Side Tabbed Control Dock -->
+      <aside class="control-dock">
+        <nav class="subtab-bar">
+          <button data-pane="panePreset" class="subtab-btn active">프리셋</button>
+          <button data-pane="paneLeft" class="subtab-btn">왼손유물</button>
+          <button data-pane="panePray" class="subtab-btn">합장유물</button>
+          <button data-pane="paneThorn" class="subtab-btn">가시관</button>
+          <button data-pane="paneRose" class="subtab-btn">장미화관</button>
+          <button data-pane="paneEnv" class="subtab-btn">단·조명</button>
+        </nav>
 
-        <!-- 1. Left Hand Relic -->
-        <div class="sec-box">
-          <div class="sec-title"><span>1. 예수님 파손 왼손 (좌상단 세례·축복)</span></div>
-          <div class="ctrl-group">
-            <div class="ctrl-label"><span>손목 회전 (손바닥 바닥 방향)</span><span id="valWristRoll" class="ctrl-val">0° (정하향)</span></div>
-            <input id="slWristRoll" type="range" min="-75" max="75" value="0" />
-          </div>
-          <div class="ctrl-row">
-            <div class="ctrl-group">
-              <div class="ctrl-label"><span>하향 기울기</span><span id="valLeftPitch" class="ctrl-val">-28°</span></div>
-              <input id="slLeftPitch" type="range" min="-55" max="-5" value="-28" />
+        <div class="dock-body">
+          <!-- PANE 1: Presets & Export -->
+          <div id="panePreset" class="pane-sec active">
+            <div class="preset-grid">
+              <button data-preset="portal" class="preset-card recommended">
+                <span>① 세운 가시관 관통형 (추천 메인)</span>
+                <span class="sub">수직 가시관 통과 왼손 + 장미화관 합장손</span>
+              </button>
+              <button data-preset="palmDownSplit" class="preset-card">
+                <span>② 손바닥 정하향 + 좌우 분리안</span>
+                <span class="sub">손바닥 수평 하향 세례 + 바닥 가시관·화관</span>
+              </button>
+              <button data-preset="nested" class="preset-card">
+                <span>③ 우하단 가시관·화관 중첩안</span>
+                <span class="sub">가시관·장미화관이 합장손을 함께 감쌈</span>
+              </button>
             </div>
-            <div class="ctrl-group">
-              <div class="ctrl-label"><span>손 높이</span><span id="valLeftHeight" class="ctrl-val">113 cm</span></div>
-              <input id="slLeftHeight" type="range" min="92" max="122" value="113" />
+            <div class="btn-row">
+              <button id="btnExportObj" class="btn-full btn-gold">.OBJ 3D 다운로드</button>
+              <button id="btnReset" class="btn-full btn-dark">기본값 초기화</button>
             </div>
+            <a href="./build_blender_relic_diorama.py" download class="btn-full btn-dark">
+              Blender 4.x 자동 스크립트 (.py) 저장
+            </a>
           </div>
-        </div>
 
-        <!-- 2. Right Praying Hands Relic -->
-        <div class="sec-box">
-          <div class="sec-title"><span>2. 성모님 파손 합장 손 (우하단 기도)</span></div>
-          <div class="ctrl-row">
-            <div class="ctrl-group">
-              <div class="ctrl-label"><span>세움 각도 (↖)</span><span id="valPrayAngle" class="ctrl-val">52°</span></div>
-              <input id="slPrayAngle" type="range" min="25" max="75" value="52" />
+          <!-- PANE 2: Broken Left-Hand Relic -->
+          <div id="paneLeft" class="pane-sec">
+            <div class="slider-item">
+              <div class="slider-head"><span>손목 회전 (파편 등쪽 노출 ↔ 손바닥 바닥)</span><span id="valWristRoll" class="slider-val">-50° (파편정면)</span></div>
+              <input id="slWristRoll" type="range" min="-80" max="60" value="-50" />
             </div>
-            <div class="ctrl-group">
-              <div class="ctrl-label"><span>손 높이 보정</span><span id="valPrayLift" class="ctrl-val">+0.0 cm</span></div>
-              <input id="slPrayLift" type="range" min="-3" max="16" step="0.5" value="0" />
+            <div class="slider-2col">
+              <div class="slider-item">
+                <div class="slider-head"><span>하향 기울기(↘)</span><span id="valLeftPitch" class="slider-val">-35°</span></div>
+                <input id="slLeftPitch" type="range" min="-65" max="0" value="-35" />
+              </div>
+              <div class="slider-item">
+                <div class="slider-head"><span>허공 높이</span><span id="valLeftHeight" class="slider-val">105 cm</span></div>
+                <input id="slLeftHeight" type="range" min="88" max="118" step="0.5" value="105" />
+              </div>
+            </div>
+            <div class="slider-2col">
+              <div class="slider-item">
+                <div class="slider-head"><span>좌우 위치(X)</span><span id="valLeftX" class="slider-val">-7.5 cm</span></div>
+                <input id="slLeftX" type="range" min="-16" max="8" step="0.5" value="-7.5" />
+              </div>
+              <div class="slider-item">
+                <div class="slider-head"><span>앞뒤 깊이(Z)</span><span id="valLeftZ" class="slider-val">+1.0 cm</span></div>
+                <input id="slLeftZ" type="range" min="-10" max="10" step="0.5" value="1.0" />
+              </div>
             </div>
           </div>
-          <div class="ctrl-group">
-            <div class="ctrl-label"><span>두 손 좌우 간격</span><span id="valSpread" class="ctrl-val">100%</span></div>
-            <input id="slSpread" type="range" min="55" max="135" value="100" />
-          </div>
-        </div>
 
-        <!-- 3. Crown of Thorns (Independent 3D Model & Sliders!) -->
-        <div class="sec-box">
-          <div class="sec-title">
-            <span>3. 가시 면류관 3D 모형</span>
-            <label style="font-weight:400;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;cursor:pointer;">
-              <input id="chkThorn" type="checkbox" checked style="accent-color:var(--accent);" />표시
-            </label>
-          </div>
-          <div class="ctrl-row">
-            <div class="ctrl-group">
-              <div class="ctrl-label"><span>면류관 높이</span><span id="valThornH" class="ctrl-val">+0.5 cm</span></div>
-              <input id="slThornH" type="range" min="0" max="30" step="0.5" value="0.5" />
+          <!-- PANE 3: Broken Praying Hands Relic -->
+          <div id="panePray" class="pane-sec">
+            <div class="slider-2col">
+              <div class="slider-item">
+                <div class="slider-head"><span>세움 각도(↖)</span><span id="valPrayAngle" class="slider-val">50°</span></div>
+                <input id="slPrayAngle" type="range" min="20" max="80" value="50" />
+              </div>
+              <div class="slider-item">
+                <div class="slider-head"><span>높이 보정</span><span id="valPrayLift" class="slider-val">+0.5 cm</span></div>
+                <input id="slPrayLift" type="range" min="-3" max="15" step="0.5" value="0.5" />
+              </div>
             </div>
-            <div class="ctrl-group">
-              <div class="ctrl-label"><span>기울기 (사선)</span><span id="valThornTilt" class="ctrl-val">0°</span></div>
-              <input id="slThornTilt" type="range" min="-65" max="65" value="0" />
-            </div>
-          </div>
-          <div class="ctrl-row">
-            <div class="ctrl-group">
-              <div class="ctrl-label"><span>좌우 이동(X)</span><span id="valThornX" class="ctrl-val">-9.5 cm</span></div>
-              <input id="slThornX" type="range" min="-16" max="16" step="0.5" value="-9.5" />
-            </div>
-            <div class="ctrl-group">
-              <div class="ctrl-label"><span>크기 배율</span><span id="valThornScale" class="ctrl-val">100%</span></div>
-              <input id="slThornScale" type="range" min="65" max="140" value="100" />
+            <div class="slider-2col">
+              <div class="slider-item">
+                <div class="slider-head"><span>좌우 위치(X)</span><span id="valPrayX" class="slider-val">+9.5 cm</span></div>
+                <input id="slPrayX" type="range" min="-6" max="16" step="0.5" value="9.5" />
+              </div>
+              <div class="slider-item">
+                <div class="slider-head"><span>정면 회전(Yaw)</span><span id="valPrayYaw" class="slider-val">12°</span></div>
+                <input id="slPrayYaw" type="range" min="-60" max="60" value="12" />
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- 4. Rose Wreath / Floral Crown (Independent 3D Model & Sliders!) -->
-        <div class="sec-box">
-          <div class="sec-title">
-            <span>4. 장미 화관 3D 모형</span>
-            <label style="font-weight:400;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;cursor:pointer;">
-              <input id="chkRose" type="checkbox" checked style="accent-color:var(--accent);" />표시
-            </label>
+          <!-- PANE 4: Crown of Thorns (Vertical Standing Portal Capable!) -->
+          <div id="paneThorn" class="pane-sec">
+            <div class="toggle-row">
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+                <input id="chkThorn" type="checkbox" checked style="accent-color:var(--accent);" />가시 면류관 표시
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--muted);">
+                <input id="chkStemRose" type="checkbox" checked style="accent-color:var(--accent);" />상단 줄기장미 포함
+              </label>
+            </div>
+            <div class="slider-2col">
+              <div class="slider-item">
+                <div class="slider-head"><span>높이(바닥기준)</span><span id="valThornH" class="slider-val">+18.5 cm</span></div>
+                <input id="slThornH" type="range" min="0" max="32" step="0.5" value="18.5" />
+              </div>
+              <div class="slider-item">
+                <div class="slider-head"><span>세움 각도</span><span id="valThornTilt" class="slider-val">82°(수직)</span></div>
+                <input id="slThornTilt" type="range" min="-90" max="90" value="82" />
+              </div>
+            </div>
+            <div class="slider-2col">
+              <div class="slider-item">
+                <div class="slider-head"><span>좌우 위치(X)</span><span id="valThornX" class="slider-val">-4.0 cm</span></div>
+                <input id="slThornX" type="range" min="-16" max="16" step="0.5" value="-4.0" />
+              </div>
+              <div class="slider-item">
+                <div class="slider-head"><span>고리 방향(Yaw)</span><span id="valThornYaw" class="slider-val">62°</span></div>
+                <input id="slThornYaw" type="range" min="-90" max="90" value="62" />
+              </div>
+            </div>
+            <div class="slider-item">
+              <div class="slider-head"><span>가시 면류관 크기 배율</span><span id="valThornScale" class="slider-val">112%</span></div>
+              <input id="slThornScale" type="range" min="65" max="145" value="112" />
+            </div>
           </div>
-          <div class="ctrl-row">
-            <div class="ctrl-group">
-              <div class="ctrl-label"><span>화관 높이</span><span id="valRoseH" class="ctrl-val">+0.5 cm</span></div>
-              <input id="slRoseH" type="range" min="0" max="28" step="0.5" value="0.5" />
-            </div>
-            <div class="ctrl-group">
-              <div class="ctrl-label"><span>기울기 (사선)</span><span id="valRoseTilt" class="ctrl-val">12°</span></div>
-              <input id="slRoseTilt" type="range" min="-65" max="65" value="12" />
-            </div>
-          </div>
-          <div class="ctrl-row">
-            <div class="ctrl-group">
-              <div class="ctrl-label"><span>좌우 이동(X)</span><span id="valRoseX" class="ctrl-val">+9.5 cm</span></div>
-              <input id="slRoseX" type="range" min="-16" max="16" step="0.5" value="9.5" />
-            </div>
-            <div class="ctrl-group">
-              <div class="ctrl-label"><span>크기 배율</span><span id="valRoseScale" class="ctrl-val">100%</span></div>
-              <input id="slRoseScale" type="range" min="65" max="140" value="100" />
-            </div>
-          </div>
-        </div>
 
-        <!-- 5. Base, Glass & Lighting -->
-        <div class="sec-box">
-          <div class="sec-title">
-            <span>5. 붉은 벨벳 단 · 유리함 · 상향 조명</span>
-            <label style="font-weight:400;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;cursor:pointer;">
-              <input id="chkGlass" type="checkbox" checked style="accent-color:var(--accent);" />유리·실
-            </label>
+          <!-- PANE 5: Rose Wreath / Floral Crown -->
+          <div id="paneRose" class="pane-sec">
+            <div class="toggle-row">
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+                <input id="chkRose" type="checkbox" checked style="accent-color:var(--accent);" />장미 화관(다발) 표시
+              </label>
+              <span style="font-size:11px;color:var(--muted);">합장손 하단 감싸기</span>
+            </div>
+            <div class="slider-2col">
+              <div class="slider-item">
+                <div class="slider-head"><span>화관 높이</span><span id="valRoseH" class="slider-val">+1.0 cm</span></div>
+                <input id="slRoseH" type="range" min="0" max="28" step="0.5" value="1.0" />
+              </div>
+              <div class="slider-item">
+                <div class="slider-head"><span>사선 기울기</span><span id="valRoseTilt" class="slider-val">10°</span></div>
+                <input id="slRoseTilt" type="range" min="-75" max="75" value="10" />
+              </div>
+            </div>
+            <div class="slider-2col">
+              <div class="slider-item">
+                <div class="slider-head"><span>좌우 위치(X)</span><span id="valRoseX" class="slider-val">+9.5 cm</span></div>
+                <input id="slRoseX" type="range" min="-16" max="16" step="0.5" value="9.5" />
+              </div>
+              <div class="slider-item">
+                <div class="slider-head"><span>화관 크기</span><span id="valRoseScale" class="slider-val">108%</span></div>
+                <input id="slRoseScale" type="range" min="65" max="145" value="108" />
+              </div>
+            </div>
           </div>
-          <div class="ctrl-row">
-            <div class="ctrl-group">
-              <div class="ctrl-label"><span>붉은 단 높이</span><span id="valRedH" class="ctrl-val">7.5 cm</span></div>
+
+          <!-- PANE 6: Velvet Base, Glass & Lighting -->
+          <div id="paneEnv" class="pane-sec">
+            <div class="toggle-row">
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+                <input id="chkGlass" type="checkbox" checked style="accent-color:var(--accent);" />무반사 유리함 & 투명 현수선 표시
+              </label>
+            </div>
+            <div class="slider-item">
+              <div class="slider-head"><span>내부 붉은 벨벳 단 높이</span><span id="valRedH" class="slider-val">7.5 cm</span></div>
               <input id="slRedH" type="range" min="4" max="18" step="0.5" value="7.5" />
             </div>
-            <div class="ctrl-group">
-              <div class="ctrl-label"><span>상향 조명 밝기</span><span id="valUplight" class="ctrl-val">125%</span></div>
-              <input id="slUplight" type="range" min="20" max="200" value="125" />
+            <div class="slider-item">
+              <div class="slider-head"><span>하부 상향 조명 밝기</span><span id="valUplight" class="slider-val">130%</span></div>
+              <input id="slUplight" type="range" min="20" max="200" value="130" />
             </div>
           </div>
         </div>
-
-        <div class="action-row">
-          <button id="btnExportObj" class="btn btn-primary">.OBJ 3D 다운로드</button>
-          <button id="btnCapturePng" class="btn btn-sec">3D 화면 PNG 저장</button>
-        </div>
-        <a href="./build_blender_relic_diorama.py" download class="btn btn-sec" style="display:block;width:100%;">
-          Blender 4.x 자동 생성 스크립트 (.py) 다운로드
-        </a>
       </aside>
-    </section>
+    </main>
 
-    <!-- TAB 2: Photorealistic Studio Renders & Plaque -->
-    <section id="secRenders" class="hidden">
+    <!-- TAB 2: Studio Renders & Exhibition Text -->
+    <section id="secRenders" class="renders-view">
       <div class="gallery-grid">
+        <div class="img-card">
+          <img src="./studio-master-a-closeup.jpg" alt="마스터 시안 A 근접 뷰" />
+          <div class="img-cap">
+            <h3>시안 A (근접 뷰) — 파손 관절·성흔 노출 세례 손(↘) + 파손 합장 손 유물(↖)</h3>
+            <p>외측 파손 단면과 성흔을 살린 예수님의 왼손과 우측 하단 장미 위 파손 합장 손 유물의 대각선 조우</p>
+          </div>
+        </div>
         <div class="img-card">
           <img src="./studio-master-b-closeup.jpg" alt="마스터 시안 B 근접 뷰" />
           <div class="img-cap">
             <h3>시안 B (근접 뷰) — 측면 손 실루엣 손바닥 하향(↘) + 파손 합장 손 유물(↖)</h3>
-            <p>손바닥을 바닥으로 향한 자연스러운 측면 성상 손 실루엣이 우측 하단 실제 파손 합장 손 유물 위를 세례하듯 덮어주는 구도</p>
+            <p>손바닥을 바닥으로 돌려 측면 조각 실루엣이 합장 손 위를 포근히 덮어주며 축복하는 구도</p>
           </div>
         </div>
         <div class="img-card">
-          <img src="./studio-master-a-closeup.jpg" alt="마스터 시안 A 근접 뷰" />
+          <img src="./studio-master-a-full.jpg" alt="1.2m 원목 스탠드 전신 뷰 A" />
           <div class="img-cap">
-            <h3>시안 A (근접 뷰) — 외측 관절 파단면 반영 손바닥 하향(↘) + 파손 합장 손 유물(↖)</h3>
-            <p>외측 손가락 파손 단면과 손등 성흔을 함께 노출하면서 손바닥이 아래를 향하도록 현수한 세례·축복 구도</p>
+            <h3>전신 외관 A — 1.2m 다크 월넛 원목 함 스탠드 (손 높이 1.1m 비례)</h3>
+            <p>하부 원목 함(75cm) + 상부 저철분 무반사 유리함(45cm) + 절반 이하로 낮춘 붉은 벨벳 단(7.5cm) 및 상향 조명</p>
           </div>
         </div>
         <div class="img-card">
-          <img src="./studio-master-b-full.jpg" alt="마스터 시안 B 1.2m 원목 스탠드 전신 뷰" />
+          <img src="./studio-master-b-full.jpg" alt="1.2m 원목 스탠드 전신 뷰 B" />
           <div class="img-cap">
-            <h3>시안 B 전신 — 1.2m 다크 월넛 원목 함 스탠드 (손 높이 1.1m 비례)</h3>
-            <p>하부 원목 함(75cm) + 상부 저철분 무반사 유리함(45cm) + 절반 이하로 낮춘 붉은 벨벳 단(7.5cm) 및 하부 상향 조명</p>
-          </div>
-        </div>
-        <div class="img-card">
-          <img src="./studio-master-a-full.jpg" alt="마스터 시안 A 1.2m 원목 스탠드 전신 뷰" />
-          <div class="img-cap">
-            <h3>시안 A 전신 — 1.2m 원목 함 스탠드 전체 외관 비례</h3>
-            <p>성인이 서서 살짝 내려다볼 때 두 손의 축복·기도 간극이 정면 시선에 들어오는 1.1m 눈높이 설계</p>
+            <h3>전신 외관 B — 성당 설치 시 1.1m 눈높이 관람 비례</h3>
+            <p>성인이 서서 살짝 내려다볼 때 두 손의 기도와 축복 간극이 정면 시선에 들어오는 인체공학 치수</p>
           </div>
         </div>
       </div>
-
       <div class="plaque-box">
         <h2>전시 캡션 명패 문안 — 〈부서진 두 손, 멈추지 않은 축복 (Broken Hands, Unbroken Blessing)〉</h2>
         <p><strong>규격 및 재료:</strong> 2025년 전투기 오폭 사고 현장에서 수습된 예수 그리스도상·성모 마리아상의 실제 손 잔해 2점(무복원 원형 보존), 가시 면류관과 장미 화관, 전례용 홍색 벨벳, 다크 월넛 원목 좌대와 무반사 조명 유리함 (50 × 42 × 120 cm)</p>
-        <p>훈련 중이던 전투기의 오폭 충격으로 성상의 몸체가 부서진 현장에서 기적처럼 수습된 두 점의 성물 파편입니다. 인위적 복원을 거치지 않은 파단면 그대로, 우측 장미 화관 위에서 하늘을 향해 겸손히 모아진 성모 마리아의 합장한 손과 좌측 상단에서 손바닥을 아래로 향한 채 세례와 강복을 내리듯 덮어주는 예수 그리스도의 상처 입은 왼손이 마주합니다. 포탄이 할퀴고 간 상흔조차 서로를 향한 기도와 축복의 손길로 바꾸어 내는 평화의 증언입니다.</p>
+        <p>훈련 중이던 전투기의 오폭 충격으로 성상의 몸체가 부서진 현장에서 기적처럼 수습된 두 점의 성물 파편입니다. 인위적 복원을 거치지 않은 거친 파단면 그대로, 수난의 가시 면류관을 통과해 내려오는 예수 그리스도의 상처 입은 왼손과 장미 화관 위에서 하늘을 향해 겸손히 모아진 성모 마리아의 합장한 손이 마주합니다. 포탄이 남긴 상흔조차 서로를 향한 기도와 축복의 손길로 바꾸어 내는 평화의 증언입니다.</p>
       </div>
     </section>
   </div>
 
 <script>
 (() => {
+  // Baked Real-Relic RLE 3D Grids (Pixel-exact contours & 3D relief of the actual photographed relics!)
+  const LEFT_B64 = "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";
+  const PRAY_B64 = "RABUAADPAQ7yt7CfARDxy8W3ARTv1tDBAhfs2tTJAE4BDPGjl4gBDfGzqZcBD/DFvKoBEu/UzLkBFe3Wz7sCGOvl3s8CF+zl4NQBE+/QzMIBEfHEwbkAPwIZ69jV0gIZ69rY1wIX7N3c2wET78nEvgER8bu0rAER8cXBuwIU7uDg3gEV783JxgEV78G/vQACAQzwo5iIAQ3wpJeGAQ/upZqKARLstaqYARTrubCfARfqwrqpARjpwrurARfrzci7ARTu1M/EARLw19TIARDxurivAD0BE+/OycACF+3p5+ICGevb2NUCGOzl4t4CFu3c2tcBE+/X088BFe7Ev7cCFuza2NQCGOz08vACFu3+/v0CFe3j4NkBEO6Uh3QBDu6nmYcBEOyZjXsBE+qShXMBFuidkH8BGOafkoEBGealmYkBGuevp5gBGei/uKoBF+vLxrkBFO3Oyr8BEu+8uLAAPAEM8o6CdAEQ8c/LwgIW7eHh3QEY69PRzQEZ6snFwAEY687MyAIY69rZ1AEX68rGwAEY6s3JwgEY6tXPxgEX6srGvQEU7M/JwAER7KCTgQER65eKeAEU6aabjQEX562llwEa5by1qgEc5MW/tAEd5M3JvgEd5M3JvgEc5cXAtAEa5723qwEY6s7KvQEW7NTPxQEW7M7KwwA5AQjzmJCBAQrymo5+AQzxn5KCARHvwruvARbsycW6ARjq0s7GAhrp29jSAhvo3t3WAhro2NXNARro087EARnovrisARnor6ieARjoraadARbptq6iARTppZmLARXnnpGDARjlq6KWARrkxL2vAR3j1M/DAh/j3NnQAiDj5eLcAiDj4+HaAh/j3tzVAR7kzsrDARzlv7mvARroyMK3Ahvo6OLYAhzn19XNADgBCvKgk4IBDPCUh3cBEO+1rJ0BFOzNxbUBF+rNx7gBGejOyLkBG+fNxrcBHObTzL8BHObRyrwBHObKxLUCHObc2M0BHOXRy8ABGuW8tasBGOawppkBF+WjloYBGOSekoIBGuObj38BHOKroJABHuLAuKkBIOLMxboBIOLNyb8BIeLOysEBIOLPy8MBIOLT0MgBH+PKxr0BHeTJxbwBHObQzcQCHuXj39YCHube3NYANgEK8piLewEL8ZaKeQEP7quikAET7MC1pAEX6sW8rgEZ6M7GuQEb5sa+rgEc5ca+rwEc5cjCswEc5cvFtgEd5c3HuQEd5M7IvAEd5NXPwgEc49PLvAEa462hjgEZ4pqMeAEZ4ZKEbwEb4ZSGcgEc4JyQfgEe4LCmlgEg4dTOwgEg4cnDuAEh4cC6rgEh4cfCtwEh4cbBtgEh4cW/tQEf483IvwEf5NDMwgEd5tDMwgIe5t3a0gIc6OTj3wEa6snJxwAzAQryk4h2AQvxnZGAAQ/vp5yMARLsu7CfARbqwrmrARnoysK2ARvmycCzARvlxb2uARzkx76vARzkvrWlARzkurGhAR3jwLiqAR3jwbmrAR3juK6eARziqZ2JARrhlodwARrhiXpjARrgjn5oARvfkYJsARzflYhyAR7fopSAAR/gv7WnAiHg2tbMASHgzsrBASLg0czEAiLg2dfRAiLh2tjSAiLh2tnUAiDj3NvWAiDk29nSAR7l0c3HAhzn19TPAhzo7+3qARrqzc3KADEBCfOOh3cBCvKglIQBDu+qno4BEuy1q5kBFuq/tqcBGOjMxLcBGubFvK4BHOXAtqYBHOTDuakBHOTAtqYBHOO8saEBHOOzp5cBHOK2q54BHeLAtqgBHOGkmIcBHOGmmYcBG+CYiXUBGuCGd18BGt+EdF0BG9+EdmABHN6Qgm0BHd6ekXsBH9+fkX4BIN+vpJUBId/Qyr8BIuDU0MYCIuDZ1s4CI+Db2NMCI+He3NgCIuHg4NwCIePi4d4CIOTh4NwBH+XV0swBHOfSz8kCHubk494CHubZ2NUAMAEK8peNfQEN8KaaiQER7a+kkwEV6sC4pwEY6MC4qQEa5se9sQEb5cS7rAEc5L60owEc5MW7qgEc47+0pAEc4rqunwEc4qyfjwEd4q6ikwEd4bSomAEd4aqdjAEc4KCTgQEb4J6QfQEb35CBawEb34t7ZQEc3pOEbwEd3pKCbAEd3peKdAEe3qCTgAEg3qKWhAEh3rSqmgEh37qxogEi3763qgEj38fCuAEj4NXRywIj4d3a1gIi4d7c2AIh4t/e2gIg49/e2gIg5NfVzwEe5dPQywIf5eXi3QId5+Dd2gEa6b6+vAAtAQnzlIl7AQvyqJuLAQ/vsKWVARTrvbSmARfoxr6xARrmxr6wARvlw7qrARzkxr2uARzkw7ioAR3jxLioAR3ivLCfAR3isqaVAR3hsKSTAR3hsqaWAR3hr6OTAR3gqZ2MAR3goJSCARzfnpF9ARvfkIBrARzeh3hiARzekIBrAR3dlYZxAR7dmot2AR/doZOAASDdpJiGASDdqZ6NASHeurChASLexLyuASPey8W4ASPf0c3DASPg1tPKAiPg2NTNAiPh29nUAiLh39/bAiHi397ZAiHj2NXPAR/k0c7IAh3m3tvUAhzn6OXfARnqxsTAACwBCvKil4YBDfCpn48BEu28s6UBFurDuawBGefDuq0BG+XGva8BHOS/tqUBHOS8saABHePBt6cBHeLEuKgBHeKwpJMBHeGvo5MBHuG/s6QBHuG3q5sBHuC1qJkBHuCom4sBHd+kloUBHd+cjXkBHN6QgGkBHN6IeWIBHd2Rgm0BHt2XiHMBH92dj3oBH92ekHwBIN2kl4UBId2qno4BId2ypZYBIt26r6ABI93BuagBI97LxLUBI9/Jw7YBI9/Oyb0BI+DV0cgCI+Da19ECI+Hd29YCIuLf3dgCIePZ1tABH+TPzMUBHOfV0soCHOfo5NwBGunOysIAKgEK85yTgwEM8aiejAEQ7revoAEU6761pgEY6Ma9rwEa5sO4qwEb5cC1pQEc5MO5qgEc48K3qAEd4rWplwEd4rOmlQEd4barmwEe4b6yowEe4b6xogEe4LSomAEe4LCjkwEe36SWhgEe362fjwEd3p6PewEd3pOEbgEd3ZCAaQEe3ZOEbgEe3JeJdQEf3J+SgAEg3KaZiQEg3KmcjAEh3KmcjAEh3KyfjwEi3LKmlgEi3bqungEj3b+0pAEj3sa+sAEj3snBtQEj39DKvwEj39fTywIj4NvX0gIj4Nza1QIi4d7b1QIh4tfUzgEg49DMxAEd5tHNwwId5uPg2AIc5tjW0QEb6Lq6uAAnAQn0mY+CAQvyqaCOAQ/wrqWUARPsvLKjARbpvrWlARnnw7msARvlw7mqARzkvrSjARzjvLGgAR3jwLalAR3ivbKhAR3hu66eAR7hua2dAR7ht6uaAR/gtKiYAR/guq6eAR/fuKycAR/fs6eXAR/erJ+PAR7eppeFAR7dl4dyAR7dkYJtAR7clIVxAR/cmIp3ASDcnZB9ASDcopeFASHcpJiIASHcpJiIASHcpZmIASLcpJeHASLcraGRASPctamYASPdv7amASPex8CyASPezci7ASPfz8q+ASTf1M7EASTf1dHHAiPg2tfQAiPg29fTAiHh3NfQASDixb6wAR7kx8K2Ah3l3NnSAhzn4N3XARrpx8a+ACYBCvOhl4cBDfGwpZQBEu69tKYBFurCu6sBGOfAt6cBGuW/taUBG+S6rpwBHOOwpJIBHOO6sJ8BHeKvpJABHeG3qpkBHuGsoI8BHuG9saIBH+C5rZ0BH+C9saEBH9+8sKEBH9+1qZkBH96xpZUBH96toI8BH96lmIYBHt2djnoBHtyThG8BH9yVhnMBH9yViHQBINuUh3MBINudkH4BIdujl4cBIdujl4cBItuiloYBItuonI0BI9utoZIBI9y0p5kBI9y6r6EBI929s6UBI93GvrEBI97NxbkBJN7FvbEBJN7RzMABJN/TzcMBJN/Uz8YCI9/b188BIeHNxbYBIOLFvq0BH+PKxbgBHObX08gCHObl39QBGerLxrwAJAEL85+WhgEM8rCmlQEQ7762qAEU68W9rgEX6MK5qQEa5rmvnQEb5b2xoAEc5LuxnwEc47munQEd4risnAEd4rqvngEe4buwoAEf4cC2pgEf4LyyoQEf4LuvnwEg4L2xoQEg37qungEg36+jkwEg3q+jkgEg3rKmlQEf3aibigEf3aGUgQEf3JeIdAEf3JaHcwEf25KDcAEg25GEcQEh256RgAEh26WZiQEi26SYhwEi26SYiAEj26ygkwEj27arngEj27WrngEj3LSqnAEj3LatngEj3L6zpQEj3cO6rQEk3cO8rgEk3cjAsgEk3tHKvQEk3tTOxAEk3tfTyQEj39HLvgEi4MnCswEg4se/sgEf48nDtgEb59DJvQIa6N/ZywEV7cTAtgAiAQr0pJqMAQzzsqiWAQ/wtq6fARPtxbytARbqvbSjARnnwLimARvlv7WlARzkvrSjARzjw7qpAR3jvLGgAR3irqORAR7hvrWlAR/hv7aoAR/gv7eoASDgv7anASDguK2dASDfuq+eASDfvLChASDet6ubASDesaaVASDdrqKSASDdq56NASDcopaFASDcpJaEASDblodzASDbkoRvASDbk4RwASHal4p4ASLaopeGASLappqKASLaqp6OASParaCTASPar6SYASTbt62hASTbubGjASPbsaiZASPcu7KjASTcvrWmASTcvbSlASTcv7aoASTdwbmrASTdyMG1ASXd1tDGASTe1M7EASPe0Mm+ASLfz8m+ASDhxb+xAR3kwrutARjpyMKzARXsy8K1ACEBCvSlnIsBDPO1rJoBD/C8tKMBEu7Fvq0BFuvBuagBGOjBuKYBGubDuqkBG+TBuKcBHOTDuqoBHePEu6sBHeK3rJsBHeK4rpwBHuG5r54BH+G9tKUBIOC/tqcBIODBuKkBIN/Bt6gBIN+9saIBId68sKIBId66rp8BId2zp5YBId2xpJQBIN2qnIwBINyekH4BINucjnwBINuWh3MBINuUhG8BINqVh3IBIdqYi3gBItqglIIBItqkmIcBI9qkmYgBI9qmmooBJNqqno4BJNqupJQBJNu3rZ8BJNu3rp8BJNu5sKEBJNu9tKUBJNu9sqEBJNy/tqYBJdzDu64BJdzKxbkBJdzIwbYBJd3QzMEBJd3Uz8QBJN7Ry8ABIt/DvK8BHuLAuKoBGufIwLIBFezKwrIBEu62sqcAHwEK9KabigEM87atmgEP8by1pAES7sjBsQEV68nCsQEY6cK5qAEa5sO6qQEb5cW8qwEc5MO6qQEd4760ogEd4rivnAEd4rqvngEe4bqvngEe4buyoQEf4MO6qwEg4MO7qwEg4MK5qgEh38C2qAEh37uvoQEh3rywogEh3rmungEh3a+jkwEh3a6jkgEh3KqdjAEg3JuMegEg25eIdQEg25iKdwEg2peJdgEh2piKdwEh2pWIdQEi2p6QfwEi2qSXhgEj2qKXhQEj2qebiwEk2qqejgEk2q+jkwEk2rWpmgEk2rWqmwEk27itnwEk27uyowEl27+2pgEl28C2pgEl28K5qwEl28rDtwEl3MK7sAEm3MfAtQEl3M3HvAEl3NHKwAEj3ca/sQEg4LuypQEc5cS8rwEW687GuQET7r22rgAeAQr0o5iJAQvztqqYAQ7xt6+eARLvxb6vARXsycKyARjpx8GxARrnxb2sARvmxLqpARzkx76tAR3kwrqpAR3jwbekAR3isKWSAR7hvLOiAR7hsaSRAR7gppiGAR/guq+gASDgwbipASHfwrmqASHfvbSlASHeurChASHeu7ChASHds6eXASHdraGRASHcp5yMASHcppqKASHcppqJASDboJKBASHamYt4ASHalYd0ASHalYd0ASHZkYRxASLZm458ASLZoJOCASPZp5qJASPZo5eGASTZqZyNASTZraGRASTaqZ2NASTatKmaASXat66fASXatq2eASXatq2eASXaurGiASXau7KkASbbwbmtASbby8W5ASbb0Mq/ASbbzse9ASbcycO3ASTdy8W5ASHfurKmARzkvLSoARfq1M3BARPuyMO5AB0BCPSZkYABCvOxppEBDvGyqpkBEe/AuqwBFezHwbIBF+rJwrQBGejMxrcBG+bGv68BHOXDu6oBHOTDu6kBHePCu6kBHuPFvawBHuLFvq4BHuHFva4BHuG3rJoBH+ConYoBH+C1q5oBIN+8s6UBId/AuKoBId+9tKUBId69tKUBId63rp8BId21qpwBId21qZoBIdytoZIBIdyuopIBIdugkoEBINuekH0BINqajHkBIdqWiXUBIdmThXABIdmUhXEBItmShXEBItmWiXUBI9milYMBI9mhlIIBJNmglIEBJNmilYMBJNmkmIcBJNmzp5kBJdq5r6ABJdq6sKEBJtq9tKUBJtq+taYBJtq7sqQBJtq/tqgBJtrAuKoBJ9rHv7QBJ9vLxbkBJtvGv7MBJdzJw7cBIt6/t6wBHePBuq4BGOnNxroBFO3Ev7UAHQEJ9J+VgwEM8quijwEQ77myogEU7MS+sAEX6sbAsgEZ6MnDtQEa58zGuAEb5cjBsgEc5Ma/rQEd5MG6qQEd48fAsQEe4sa/sAEe4r+2pQEf4byzowEf4cK7rAEf4MK8rgEg38S9rwEg3721pgEh37eunwEh3rmwogEh3ruxpQEh3bCmmAEi3bKomgEi3KufkQEi3KygkQEh26SXhwEg25aJdgEg2oBxWwEg2X5yXQEh2Y+CbgEh2Yx8ZgEh2YFyXQEi2Yp9awEi2ZqOfAEj2Z2QfgEj2J2QfQEk2J+TfwEk2KGVgwEk2aiciwEl2aufjwEl2bSrmwEm2b+2pwEm2b20pQEm2bmwoQEm2bqxpAEm2cO7rgEn2sO6rQEn2sO6rgEn2sa/swEn2snDtwEm28zGuQEj3cG6rgEf4by1qQEa58zFtgEW69HKvgAcAQj0l45/AQrzp5yJAQ7wrKKQARLtu7SjARbqw72uARnoycO0ARrnxb+xARvmycO0ARzlxL6tARzkx7+vAR3jurKiAR3jwLiqAR7iy8S4AR/iwLmqAR/hvbWlASDgw7utASDgvrSmASDfr6WUASHfurKjASHfvrapASHevraoASLdtaudASLcsKaYASPcsKaYASTbraKVASPbo5eIASLbopaGASHanZB+ASHZhndjASLYfW1bASPXjX5qASPYintmASPYjX9rASLYlYh2ASPYlol4ASPYmo18ASPYnZB/ASTYpZmIASTYqJyLASTYo5aGASXZq5+PASbZuK6fASbZvLOlASfZwberASfZwbiqASfZt66eASfZvraoASfZwrqtASjZx8C0ASjZycO3ASjZy8W5ASfayMG1ASXbwLesASLfu7OnAR3kyMCzARjq18/DARTtvrexABsBCPSWjHwBC/GlmocBD+6ropABFOu5sqIBF+nFv7EBGefLxbcBG+bMx7kBG+XJw7UBHOTGwLABHeTHwbIBHeO2rp8BHuKyqpoBHuLBu60BH+HIw7cBIOHHwbQBIODEvrEBIOC+tqcBId+2rp8BIt/Du64BIt7At6sBI92+tacBI9yvppYBJduupJYBJtq2rJ4BJ9q0q50BJtmnnY4BJdmkmIkBJNmXingBJNiJe2gBJ9aShXIBKNaMfWoBKNaSg3ABJtaZjHoBJteThnMBJdeZjHoBJNeZjXwBJNiYjnwBJNiajn0BJNiflIIBJNikmIcBJdisoJABJtiyqZkBJtm7sqUBJ9nCuKwBJ9nFvK4BJ9nCuqsBKNnGvrABKNnEvLABKNnJw7cBKNnMxroBKNnIwbUBKNnFvbIBJ9rEu7ABJNzAua4BIOHGv7IBGufTyr4BFuzFvbQAGwEJ85WMewEM8aOYhgEQ7Z6VggEV6qeejQEY57KqmwEa5ry1pgEb5b+5qgEb5b+4qQEc5MK7rAEd48C7rQEd4sC6qgEe4rqzowEf4r64qgEf4cfCtgEg4cS+sgEg4MO9sAEh38C5qgEi37+5qgEj3sK6rQEk3b+3qQEl3LevoQEm27KpnAEn2qqhlAEp2basngEp2KyilAEp2K2klQEp15qOfwEo15qNfAEp1op9agEq1ZCDcQEs1JCCcAEr1JWHdQEr1JmMewEq1ZWIdwEq1ZmMewEo1paKeQEn1p2RgQEm1peMegEl16CUgwEk2JiMewEl2J6TggEm2KedjgEm2LOrngEn2LyzpQEo2MK5qwEo2L60pgEo2MS7rwEp2MnCtgEp2MnCtgEp2MzFuAEp2MG5rAEp2MS8rwEo2Ma+sgEm2sC4rQEj3r21qgEd5MzFuAEX69nSxgET7raxqwAaAQvympGCAQ7wqZ+PARLsp5+QARbpq6OUARnnrqeXARrmsKiZARvlr6eYARzkrqeWARzjqJ+PAR3jsamZAR7iwbyuAR7ixcCzAR/ixsG0ASDhx8K2ASDhwbutASHgwr2wASLfxr+zASPexL6yASTewLmrASXdvrapASbcwbuvASfbxb+yASjav7epASnZu7OlASrYtKudASvYsKeaASvXsaibASvWqZ+SASvVmY5+ASzUkIRzAS3UmIt7AS3TnpKCAS3TlYl4AS7TkoV0AS3TlYl3AS3Uj4NxASzUkYRzASvUjH5sASjWjIBwASfXmIx+ASbYlYl8ASfYoJWJASfYrKOWASjYvLKlASjYwLaoASjYwrmqASnYysO2ASnYzMa5ASnYyMG1ASnYycGzASnYwLiqASnXw7uvASnXxr6yASfZwbmuASTcvberAR/iy8W3ARjp2NHDARTtwr20ABkCEO+yq5sBD/C/uKgBEe7JxbcBFevV08cCGejg3tMCG+fl5NkCHObi4dgCHeXf3tYCHeTX1csBHuS/u68BHuO7tacBH+LDvLABH+LLx7oBH+HFvrEBIOHCvLABIOHGwbQBIeDFwLQBIt/JxLgBI9/Fv7MBJN7IwrYBJt3GwLMBJ9zCvLABKNvLxbkBKdrHwLEBKtm4sKEBK9m6sqYBK9i8takBLNe6s6UBLNa5saQBLdWpoJMBLdWonpABLtSmnIwBLtSZjXwBLtOWi3oBL9OglIYBL9Oon5ABL9Owp5kBMNO2rqEBL9TFv7IBLdXMyLsCKtfa2NACKNjd3NgCKdnb2dUBKdnV0s0BKdnKxbwBKdjFvrIBKdjGvrMBKdjKw7cBKdjKw7cBKtfIwbUBKtfFvrABKdfJw7YBKdfBt6gBKde/tqYBKNjCu7ABJtu+uK0BIeDNxroBG+fSybwBFuzJw7gAGAIR7KWbigIR7buxnwER7rOrmgET7LmyogEX6sO9rgEa6MnEtwEc5tHOwwEd5tbUyQEe5dDNwgIe5N7d1gIf5O/x6wIf4+Hg1gEg487LwAEg4s7LvgEg4cjBtAEg4cS/sQEh4cjEtwEh4MzHuwEi383JvQEk38fCtQEl3sS+sQEm3czHuwEn3MjEtgEo28W+sAEp2r+4qQEq2bOrnAEr2by0pwEs2MfAswEt1762qQEt17KpmwEt1qGWiAEu1a6mmQEu1biwowEu1KqgkgEv06WbjgEv06WdjwEv06adkAEw06qilQEw07GqnAEx07y0pwEv1MS7rQEs1sjBsgEq2NPNwQIp2eHe1gIq2erp5QIq2evr6AIq2OTk4AEq2NDMwwEq18W9sQEq18a+sQEq18zFuQEq18rDtwEq18nBtQEq1rismAEq1r20pAEp18O/tQEo2cC5rQEk3bmwpAEe5M/HugEY6tfQxAEV7cG8tAAXAhLrn5eHAhLroZiHARLsqaGQARTqsqqYARjoubKiARrmwr2tARzlyMS2AR3l1dLGAR3l083AAR7kr6maAR/j0M7EAiDj6eniAiDj19fNASHi1NPIASHiy8e7ASHh1tTIASHhy8W4ASLgxr+xASPfzsq9ASTf1NDDASXexL6wASbdzMe6ASfcz8u+ASjbysS1ASnbwbmsASrayMK0ASvZwLmrASzYwbqrAS3YvrapAS7XvLSmAS7Wt66hAS7Vu7OmAS7VrKOUAS7UoZiHAS/UpZyMAS/To5qLAS/TnZODAS/TnpSDATDSnJKDATDSn5SEAS/TsKSUAS7Ur6OTASrWr6OSASnXuKybASnYwLinASrY0Mq8ASrY1tHEASrX19LFASnXv7eqASrXyMGzASrXzMa6ASrXzsi8ASrWx7+zASrWwrqwASrWxb+0ASrWxb+zASnXw7yxASbaurKnASHgz8m8ARvn1M7BARbsxsG4ABcCEuqdloQCE+qimIcBE+qkmYkBFemroJABGOawqJcBGuW5s6IBHOW/uKoBHeXGwrUBHeTW08cBHuPJwbABHuOYkIABIOPR0McCIePn6OACIeLa29IBIeLV1MoBIeHPzcEBIuHV08gCIuDX1cgBI+DKw7UBJN/Mx7kBJd7U0MQBJt3V0cYBJ9zTz8IBKNvTzsEBKdvPyrsBKtrKxLMBK9m8taYBLNjAuasBLdjHwrUBLtfKxrwBL9fU0cYBL9aupJQBL9WThnQBL9ShmIgBL9SvpZcBL9OpnY0BL9OdkoABL9Kek4EBL9KflIIBMNKek4EBMNKglIIBLtOkl4YBLdSmmYgBKtWom4oBKtaqnowBKta4rJsBKtbAtaMBKta0qZcBKdayqJkBKta+tqcBKtbCu60BKtbIwbUBK9bHwLUBK9bGwLQBK9bEvbEBK9bGwLQBKtbAu68BKNjDv7MBJN3QzMEBHuTUz8MBGOrX0MUBFO2/urQAFgIT6qyjlAIT6qidiwET6peLegEV6aGYhgEY5qyjkgEa5bKqmgEc5Lu2pwEd5L66rQEe5MTBtQEe49HNwQEf48C9sgIg49jY0AIh4+Xm4AIi4+fn4AIi4tzc0gEi4dPRxgEi4dDNwQEi4NDLwQIj4NzYywEk383HuAEl3tDJugEm3cO8qgEn3LOqmQEo2721pAEp28S+rwEq2sbBswEr2cjDuAEs2cfDuAEt2L65rwEu2MfFuwIw197c1AIw1uHe1gEw1sfBtgEw1ayikwEw1KSYhwEw1KOXhwEv05+TggEv05+UgQEw0qGWhAEw0qKWhAEw0qOXhQEv0qKVggEu06KVgQEt06aahwEt06yfjQEs1KmciQEs1KSXhQEr1augjwEr1b60pQEr1r61pgEr1ry0pAEr1ru0pQEr1sa/sgEr1cW/sgEr1cS9sQEr1cS/swEr1cbAtQEq17+6rgEn28vHuwEh4djUyQEb59HMwQEW7MbCugAXAhTqv7msARPrtq2fARTqs6yfARjnvbquARvlyMa7ARzkzs3CAR3kzMvAAR7kzc3BAR/j0tLHAh/j29zSAiDj3NzUAiHj5ebhAiLj6OnjAiLi4eLaAiLi4eHYASLh19TJASLgvLanASPgurSlAiTf29fLASXe0cu7ASXdtaybASbcsqmZASfbw72wASnbysa8ASray8i8ASvZycW5ASzZyMO4AS3YvritAS7Xv7muAS/Xx8K3ATDX0tDGAjHW39/XAjHW29jPATHVycO4ATHUuK+hATHUrKCPATDTp5uJATDTqJ2KATDSo5aEATDSn5J+ATDSn5R+AS/SppuHAS/Sqp6KAS/SpZeCAS7So5aCAS7TsKaVAS3Ttq2dAS3UvLOjAS3Vv7anASzVwrmsASzVw7uuASvVxb2wASvVxLyvASzVw7qtASzVw7ywASzVx8K2ASvWyMO3ASnZxcG2ASTd08/EAR7k0c3CARjq08/EARXtwLy3ABYCE+ugm4wBEe2yq5wBE+u0r6ABF+i7tqcBGua7tqcBHOS/uaoBHeTBvK4BHePAvK8BHuPKxrgBH+PNyrwBIOPNyr0CIePc3NQCIuPn6OMCIuLl5uACI+Ll5d8CI+Hm5t8CI+Ha2M8BI+DKx7wBJN/W08cBJd66tKYBJd3CvLABJty9t6gBJ9u9tqkBKdvCu68BKtrCu60BKtm+t6kBK9m6sqUBLNi6s6UBLde3sKEBLte5saMBL9a6tKYBMNbBvK8BMdbNyL0BMdXW0sgCMdXb184CMdTY1csBMdTNx7oBMdO5r6ABMNO4rZ0BMNKzp5YBMNKwopABL9KqnYgBL9KilX8BL9Kqn40BL9KzqZkBL9Ouo5IBL9OyqJYBL9O+taUBLtTEvK4BLdTEvK8BLdXCuqwBLNXFvbABLNXEvK8BLNXDvK8BLNXEu64BLNXEvK8BLNXGwLMBKtfGwbUBJ9vHw7gBIeDRzcMBG+fPy8ABFuvFwLcAFwEO75WMfQEQ7JmNfQEU6aGWhgEY5qmfjgEa5LCnlQEc47evngEd47u0owEe48O9rAEe4sjCsgEf4snGtwEg4tLQxAIh4tzb0gIi4uLi2wIj4uXl3wIj4ubn4QIj4ejp4wIk4OXl3gIl4OPj2wIm39vZzgEm3srFuAEn3b21pwEn3LuzpAEo2721pgEp2rqyoQEq2bmwnwEq2bWrmwEr2LOpmAEs17KolwEt17KpmAEu1rKpmQEv1rOqmwEv1bSqnAEw1bOqmwEx1LeuoAEx1LmvnwEx1LesnAEw07SpmAEw07GkkQEw0qydiQEv0p+QewEv0peIdAEv0q2hkAEv0quikQEv0rCmlgEv07SqmwEv07qxoQEv08C3qAEv1MK4rAEu1MO7rgEu1MO7rgEt1MK6rQEs1MK6rQEs1MO7rgEs1MO7rgEs1MO7rgEs1cW9sAEr1sW+sgEp2MjEuAEk3czIvQEe5MvHvAEY6tDMwQEU7b23sAAWAQ3voJaGAQ/tm5KEARPpnJOEARfloZaGARrjqJ2NARvjr6WVARzisamXAR3itKyaAR7ivrakAR/ixb+uASDiysW3ASDi0s/DAiHi19bKAiLi3t7UAiPi4uLaAiPh5eTeAiTh5OTeAiXg4+PdAibf6OfgAife3dvRASfd0s3AASjcycO0ASjbxr+wASnbvbSkASnat6ybASrZtqqaASvYsaWUASzXsKWUAS3XsaaVAS3WsaaUAS7WsaWUAS/VsKWUAS/VsKWSAS/UsaWQAS/UrJ2IAS/TqZqFAS/TpZWBAS/Smop0AS/Smo13AS/SmY14AS/SoJSBATDSr6OTATDSr6SUATDTsaiXATDTurGiATDTv7anAS/TwLipAS/Uxr6xAS/UyMCzAS7UyMCzAS3Ux7+yASzUwbmsASzUw7uuASzUxLyvASzUxbyvASzUwruuASzVx8G1ASrXycO3ASbbx8G1ASDhycO3ARnoy8W5ARXswL2zABUCEuqXkIIBEOyhloUBEeuXjXwBFOick4QBF+WelYUBGuOimYcBG+KlmooBG+Kso5IBHOKzq5kBHeK4r58BHuK9tKMBH+LDvKoBIOLLxbYBIOLPyr0BIeHRzcACIuHb2c4CI+He3tUCJOHj4t0CJeDl5d8CJ+Dn5+ECKN/r7OYCKN7m5t4CKd3Z1ssBKdzOyLsBKdvIwLABKtq+tqQBKtm1qpkBK9iyp5UBK9exppQBLNeyqJYBLdaxpZMBLdawo5ABLtWvoo8BLtWuoYwBLtStnokBLtOnmIMBLtObjHYBLtOVhnABL9KThnABL9KajnkBL9KglIABL9KroI8BMNKuo5MBMNKyqZoBMNO8s6QBMNO+taUBMNO+tqYBMNTEvK4BL9TIwLMBL9TIwLMBLtTLw7YBLdTIwLMBLdTEvK8BLNTGvrEBLdTIwLMBLdTJwbQBLdTJwbQBLNTJwbQBK9bDvK8BKNnEvrEBIt/IwrYBHOXKxLcBF+rIw7gAFQIT6ZqRgQER6qOYhgES6pmOfAEV5pmOfQEY5J2UhQEZ456VhQEa4p+WhQEb4qadjAEc4qyjkgEc4quikQEd4a+mlQEe4bqyoAEf4b63pgEf4cfBsQEg4cvFtwEh4c/LvQIi4dfWzAIj4eDf2QIl4OTk3gIm4Obm4AIo3+jp4wIo3+np5AIp3ubl3wIp3drXzQEq3M7HuQEq28W+rgEq2r61owEq2betmwEr2LOplwEs17SplwEs1rWolQEt1rOmkwEt1ayfiwEt1KWXgwEu1J6OeQEu05iKdAEu05iJdAEu056QfAEv06SXhAEv0qaZiAEv0qebiQEw0qSYhgEw0qugkAEw07OqmgEw07uxoAEw07yzogEw08W9rgEw1MzEuAEv1MrCtQEv1MnBtAEu1MvDtgEt1MnBtAEt1MjAswEt1crCtQEt1MrCtQEt1MnBtAEt1MnBtAEt1MjAswEs1cjAswEq18jBtAEl3MS+sgEf4sa/tAEZ6M/JvgEU7LOuqQAUAhTompKBARLqoZiFARPpmY98ARXmlIp3ARjjlIp5ARninZSEARrinZSEARrinpWEARvioZmHARzhqaCPARzhqaCOAR3htKqaAR7hsaiWAR/hu7OjAR/hxL2sASDhx8KyASHhzMi8ASPh1NHGAiTg29rSAibg397YAiff5eXgAijf5ubhAine5eTgAird4+LcAird3drSASrc19LHASrawbenASrZt6qUASrYuKuVASrXr6GNASvWqZqFASzWoZJ9ASzVl4hzAS3Um454AS3UmYx4AS7UnI97AS7ToZWAAS7TpJeFAS/TppmIAS/TppmIATDTpZmHATDTraOSATDTt66eATDTubCgATDTv7WlATDTxbysATDUy8K1ATDUy8G0AS/UyL+yAS/Uy8O2AS7UysK1AS7Uy8O2AS3VysG0AS3VysK0AS3Uy8O2AS3UyMCzAS3UyL+yAS3UyMCzAS3UycG0ASvWysK1ASfaxL2xASHgxb6yARrnz8m+ARXrtrOrABQCFOibkIABEuqek4EBE+mbkX8BFuaYjnwBGOOZjnwBGeKVingBGeKZj34BGuKdlIMBG+GbkoEBG+Gdk4IBHOGnnYwBHeGuppQBHeGzq5oBHuG4saABH+G5sqIBH+HDva4BIOHGwrQBIuHLyLsBI+DV08cCJeDa2M8CJt/c29MCJ9/g39gCKd7h4NoCKd7i4twCKt3h4dsCKtzd3NMBKtvGvq4BKdmQfmUBKNd6aVABKNZ1Z1ABKdZ4bFcBKtWJfGcBK9WWinQBLNWZjXcBLdSckHoBLdSdkXsBLtSfk34BL9SjlYQBL9OlmIcBMNOtoZABMNO1q5sBMNO4sJ8BMNOzqpkBMdO8sqEBMdPDuqsBMdTJwLMBMNTOxroBMNTHva4BL9TEuqsBL9TOxrkBLtTLw7YBLdXKwrUBLdXKwrUBLdXKwrUBLdTKwrUBLdTJwLMBLdTJwbQBLdTKwrUBLdTJwbQBLNXHv7IBKNnIwLMBIt7JwrUBG+XNx7sBFuu5s6oAFAIU56CWhAET6ZyRfwET6JySgAEW5pmOfAEY5JeMeQEZ45eMeQEZ4pSKdgEa4pqRfgEa4p2UggEb4ZeOfAEb4aadjAEc4ayjkgEd4a6llAEd4baunQEe4bevngEf4bqzogEf4bu0pAEh4MW/sgEi4MzIvAEk4NDNwQEl39TRxgIm39fVygIo3tjWzAIp3t3d0wIq3uHh2QIq3d/f2AIq297c1QEp2qifkQEo2G5fSQEo12JTPQEo1npsWQEq1ox/bAEr1ZaJdgEs1ZiMdwEt1ZuOeQEt1JuNeQEu1KaZhwEv1KygjwEv1LCllAEw1LuxoQEx1L60pAEx07yxoAEx07yxoAEx07+1pQEx1MK6qwEx1MnBtQEw1M7GuAEw1MzFuAEv1M/HugEv1MrCtQEu1czEtwEt1czDtwEt1cvDtgEs1crBtQEs1crBtAEt1MnBtAEt1MnCtAEt1MrCtQEt1MrCtQEs1ce/sgEp2MrCtQEj3ce/sgEc5Ma/sAEX6bm0qwATAhflkYp8AhXnpZuIARPpnpSCARTonJGAARblnZKAARjkmo99ARnjl4x5ARnil4x4ARnilot4ARril416ARrhnJKAARvhopeGARvhppuLARzhrKKSAR3hs6qZAR3hsqqZAR7hsqqYAR7htq6dASDgvbWlASHgvrenASLgwruuASTfxr+zASXfxL+zASbez83AAije19XKASne1dPIAird2NfNAivc4ODYAivb4uHbASrazMnAASrYpJuMASrXkIRxASvXlIZ0ASvWmo17ASzWm458AS3VoZSCAS7Vqp6NAS7VsKWUAS/Vuq6eATDVv7SlATDUxLusATHUw7ipATHUwbeoATHUxr2uATHUx72vATHUxLutATHUzcS3ATDUz8e6ATDUzsa5AS/VzcW4AS7VycG0AS7VzcS4AS3VzcS4AS3VzcO2ASzVy8K1ASzVycC0AS3UycK1AS3UysK1AS3UysK1AS3TysK1AS3UycGzASrXx7+yASXbxLywAR/iwbirARnnwLuxABMCF+WWi30CFuamm4kBFOigloQBFeehl4UBF+WhloUBGOShloQBGeOckX8BGeOZjnwBGeKdkoABGuKaj30BGuKaj3wBGuGek4EBG+GajnwBG+GWi3cBG+Gaj30BHOGlm4oBHeGvpZQBHeGwppYBHuCyqpkBIOC2rZ0BIeC+tqYBI9/Eva4BJN/BuqsBJd7HwbIBJt7LxrYBJ97KxLUBKN3Mx7kBKt3V0cQCK9zY1csCK9vb2dECLNrd29IBLNnJw7kBLNivppkBLNemnIwBLdannIwBLdaroZABLtaonowBL9WvpZQBL9W4rp8BMNXBuKkBMNXAt6gBMdS7sqMBMdS/tqgBMdTLw7YBMdTNxbkBMdTOxbgBMdTOxrkBMNXNxbgBMNXOxrkBL9XOxrkBLtXOxrkBLtXNxbgBLdXMxLcBLNXMxLcBLNXLw7YBLNXKwbMBLNXJwLMBLdTIv7MBLdTHvrIBLdPHv7IBLdPFva8BLNXFvbABKNjEvK8BI97AuKwBHOTCu68BGOi3s6oAEgIX5ZSLfQIW5qaciQEU6KKXhgEV56OXhgEX5ZyRfQEY5J6TgAEY5KOYhgEZ46CVgwEZ45+UggEZ4pySgAEa4pyRfwEa4puRfgEa4ZiNegEa4Y2BbAEa4Yh8ZwEb4ZaLeQEc4aSZiAEd4Z+UggEe4KuhjwEf4LGnlQEg4K2jkQEh37asmgEi37munAEk3rermAEk3rasmQEl3bmunAEm3buwngEo3L+2pAEp3MS8qgEr28nDtAEs28/LvgIt2tzZ0AIt2drZ0QEu2MrFuwEu2LWtoQEu18S/tAEv18W/swEv1sfAsgEw1ryzogEw1rWsnAEw1bmwoQEw1b62qAEx1cjAswEx1MzFtwEx1M7GuQEx1c/HugEw1dDIuwEw1dHJvAEv1dDIuwEv1c/HugEu1c3FuAEt1c7GuQEt1szEtwEs1srCtQEs1srCtAEs1crCtAEs1ci/sgEs1ce9sQEt1Me9sgEt08a+sQEu08W9sAEt08a+sQEs1cK7rgEn2cG5rAEg4MW+sQEZ583HvAEV67OwrAARAhbllIt8AhXnpJuKARTpoZaGARTopZqKARbmo5iGARjloJSCARjko5iGARnkpZqIARnjopeFARnjopeFARrjpJqIARrio5iGARrioJSDARrhn5ODARrhnZGAARvhoJSDARvhopaFARzhoJSDAR3hpJiHAR7gq6COAR/gqZ6MASDfq6CNASHfsKOQASLesqSRASPesqWSASTesaSRASXdsaSQASbdsaSRASjct6mWASnbua6aASrbwLajASzaycKxAS3a08/CAi7Z2NbMAi/Z19XMAS/Yz8rBATDY0MzDATDX1NHIATDXysS4ATDWxr+yATDWx8CyATHVysO1ATHVyMCxATHVxr6vATHVzcW3ATHV0Mi7ATDV0sm8ATDV0Me6AS/Vzsa5AS/V0sq9AS7W0cm8AS3W0cm8ASzWz8e6ASzWzMS3ASvWycG0ASvWysK1ASvVyL+xASzVx76wASzUyL+xAS3Uxb2wAS7Txr2xAS7TxLyvAS3Uxr2xASrWxr6xASXcx8CzAR3kx8G2ARjpvbqyABICFOihmIcBEuqimYgBE+qkmYkBFeelmYoBF+Wmm4oBGOWimIYBGOSjmIYBGeSmm4oBGeOmm4kBGuOonowBGuOsopEBG+OsoZEBG+KnnYwBG+KhmIgBG+KimIkBG+GimYkBHOGlnIsBHeGqn48BHuGtoZABH+CsoY8BIOCqn40BId+wo5EBIt+ypZIBIt6xpJEBI96voo8BJN6voY0BJd2ypZEBJtyypJABKNuqnIUBKdupmoMBKtqvoo0BLNrDuaYBLdnFvKoBLtnNx7gBL9nV08cCMNja184BMNjV0soBMNfV0soBMNfU0cgCMdfa1s0BMdbY1MkBMdbTzsIBMdXKw7UBMdXMxLYBMNXPyLwBMNXRyr0BL9bQyLsBL9bPyLsBLtbNxrkBLtbTy74BLdbRyLsBLNbLxLUBK9bLxLYBK9bKw7UBK9bJwrMBK9bJwbIBLNXIvrIBLNXJwLMBLdTHv7EBLdPEva8BLtPFva8BLtPIv7MBLdTKwrUBKdjLw7YBIt7IwbUBHOXJxLcBGOi0sKkAEQIT6ZuRgwER66KYiAES66KZiAEU6KCXhgEX5qabigEY5aqfjgEY5amdjQEZ5KmejgEZ5KmgjwEa5KyikQEa46+mlQEb47GolwEb46+llAEb4qecjAEb4p+WhwEb4qKZigEb4qifjwEc4amgjwEd4aidjQEe4augjwEf4K+kkgEg4LCkkgEh37KlkgEi37KlkQEj36+ijwEk3rOmkwEl3rWolQEm3bOnlAEn3LWolAEo27ismAEp2resmQEq2rWplgEr2bWplgEt2cC3pAEu2crBrgEu2MjBsAEv2M3HuAEv2NDKvQEw19HMwgEw19bSyAEx19PPxAIx1tvYzwIx1uDd1AEx1tjUyQEw1tjSxgEw1tXQxAEv1tLMvwEu1s3FuAEu1s3FuAEt1tHJvAEs1szEtwEr18fAsAEr18jBsQEq18vCtAEq18vCtAEr1srBswEr1srAsgEs1cjBsgEs1MW/rgEt1MW9rgEu08jBswEu08vDtgEu08vDtQEs1czEtwEo2cjBswEh38S9sAEc5cbBtwEZ57CuqQAQAhPpmJCAARHrnpWGARLrn5WFARTopJmIARbnpJiIARfmpZuKARjlqqCPARjlraSTARnlrKOSARrksaiXARrktKuaARvktaybARvjtaqaARvjr6OSARvjqp+OARvio5iJARviopiJARvipp2OARzhrKKSAR7hraGQAR/hraGQASDgr6SSASHgsKSSASHgsqWSASLfsaSSASPfsaSRASTes6aSASXdtqmWASbdt6qXASjct6qXASnbtamVASratKeWASraua2cASvZt6uaASzZvLCeAS3YwrimAS7YwrmnAS7YvrWjAS/XwbmqAS/XzMa4ATDX0s3AATDW0czAATDW0Mu/ATDW1c/DATDWzsi8AS/W1M7BAS7Wz8i7AS7WzsW4AS3W0Mi7ASzXzca3ASzXx7+xASvXzMS2ASrXx76vASrXxr2sASrXxr2tASrXx76vASrWycCxASvWycCxASzVxr6uASzUyMCyAS3UzcS4AS7TyMCzAS7TycGzAS7Ty8O1ASzVyMCzASfZxL2wASHfv7quAR/hysa7AiPdsrCpAA4CE+iLg3UCE+mclIQBEeubk4MBEuqimIcBFOiimIgBFuelnIsBF+alm4sBF+apn48BGOauppQBGeWupZQBGeW0qZkBGuSzqJcBGuSyp5UBGuSzqJYBG+S1qpgBG+O0qJgBG+OuoZEBG+KkmIgBG+KZjn8BHOKflYcBHeGspJYBHuGxp5gBH+Gvo5MBIOGtoZABIOGvo5EBIeGwo5IBIeCwo5IBI9+xpJIBJN6zppMBJt2ypZIBJ9yypZIBKNy1qJQBKdu3q5gBKtq5rZoBKtq1qJQBK9mtoI0BLNmypZMBLNi5rpwBLdi9saEBLdjAtaUBLtfBt6cBL9fDuagBL9a/taYBL9bEu6sBL9bBt6cBL9bBuKgBLtbIwLEBLdbFva0BLdbIv7ABLNfFvawBK9fHv68BK9fGva4BKtfFvKwBKdjFvKwBKdjHvq4BKdjFvKwBKdfGva0BKtfJwLEBKtbIv7ABK9bHwLEBLNXLxLUBLNXJwbQBLdTIwLMBLtTIwLIBLtPLw7YBLtPKwrUBK9bHwLMBJtrFvrIBJNzGwLQCJ9nFwbcADQIS5mljVAIS546FdgIS6ZiPfwER6pqRgAES6p6VhQEU6aScjAEV6KmhkQEW56ifjwEX562klAEY5rOqmQEY5rGmlgEZ5a+jkgEZ5bGmlAEa5bOolgEa5LWqmAEa5LitmwEa5LesmgEa5LOnlgEa462hkQEa46aaigEb4pmNfQEc4pKHdwEc4aGYiwEd4q+nmwEe4rKomQEe47GmlQEe47GllAEf47ClkwEg4rKmlQEi4LKlkwEk37KlkgEm3bGkkgEn3LOmlAEo27SnlAEp27eqlwEq2rGkkQEq2a+ijwEr2bKlkgEr2bSnlQEs2LismQEs2LeqmQEt17mtnAEu17qtnAEu1sCzowEu1sS4qAEu1r+zowEu1sG1pQEt1r+0pAEs1rywoAEs17mungEr17+0pAEr17+0pAEq2MG4pwEp2MS7qgEp2Me+rgEo2Mi/sAEo2MrBsgEp2MrBsgEp2Mi+rwEq18jAsQEq1sW9rAEr1sW8rAEr1ce/sQEs1cnBswEt1MjAswEu1MrCtQEu1M3FuAEs1c3FtwEp2MnCtQEo2cS+sAIs1czGuQIv0sTAtgADAjPQ19PNAAcCEeRXT0ACEuZvZlYCEuiTinoCEumWjX4BEuqbkoEBEuqeloYBFOmknI4BFOmro5YBFeitpJUBFuivppUBF+eyqZgBGOaroZABGOauopEBGeWzqJcBGeW0qZcBGuW4rZsBGuW4rZsBGuS3rJoBGuS0qZcBGuSuoZABGuOpnYsBGuOmm4oBG+KdkH4BGuKEdmMBGuOFeGkBGuSjmo4BGuawqJwBGueupJcBG+evpZUBHeWyppUBIOOxpZUBIuGvo5IBJN+zp5YBJt2xpJMBJ9yuoZABKNuypZQBKduypZMBKtqypZIBKtmzppUBK9mypZMBK9mxpJIBLNizppUBLNi6rZwBLde8r54BLde9sJ8BLte/s6MBLdfFuakBLdfDt6cBLNe8sKABLNe+sqIBK9e8sKABKtfBtKUBKti/s6MBKdjDt6cBKdjGvKsBKNnFvKsBKNnFvK0BKNnJwLEBKNnKwrIBKNnIwLABKdjGva0BKdfAtqYBKtfHvq8BKtbKwbEBK9bEu6wBK9bRy74BLNbW0MMBLNbSy74BKtfMxLcBKNnLw7YBKdnNxbgCLNXKw7YCMNLPyLoCMdHc2MsCMtHV0MYCM9DX0MMCM9DUzsQABgIS5GJXRwIS5GNaSgIR5mZeTgIR6Il+bgIR6piOfQER65iPfgER7KKaiwES66efkgES66mhlAET6qyjkwEV6bSrmQEW6LWsmwEX562ikQEY5rGmlAEY5resmgEZ5ritmwEZ5bmsmwEZ5bmrmgEZ5bWolwEZ5bKlkgEa5LCikQEa5LCjkgEa5KufjgEZ5KaaiAEY5Ix+agEX5XttWQEW53psWwEV6YqAcQEV6qObkAEW6rWsoAEZ6bGmmQEc57KllgEe5LSolwEi4rOnlgEk37CkkwEm3bKllAEn3LapmAEp27eqmQEp27SolgEq2rSnlQEq2rWolwEr2bWpmAEr2birmgEs2LmsmwEs2LyvngEt176zoQEt18C0pAEt18W5qAEt18G1pQEs17+zowEr2MS5qAEr2MW5qAEq2LywoAEp2L6yogEp2cS5qAEo2ca9rAEo2ce+rQEn2si/rwEn2si/sAEn2srBsgEo2szDtAEo2cvDtAEp2czDswEp2M3EtAEp2M3EtQEp2M3GuAEp2dbQxAEo2tXOwgEn29DIugEm3NDIuQEl3dDIugEm3NTMvwIs1tfRwwIv08TAswIx0b+8sQIy0eLd0QAJAhHlbmJQAhHma2BNAhDpg3lpAhDrnpWGAQ/tn5aGAQ7upp2QAQ/vp5+SAQ/urKSXARHtr6iYARPst66fARTqtaubARbpsqaVARfnsqaVARjntamXARjmuauaARnmuaybARnmuKuaARnluKuaARnltKaUARnlq52KARnlrqKQARjmq56MARfmp5qKARbnnpF/ARTpiX1rARLqi39tARHse25aARHsbGBQARPtiYB3ARXsqKGZARjrtq2hARrosaeaAR7lsqaYASHitKiYASTgtKeXASbetKeWASjctKiXASnbtqqZASnbuKubASrataiYASratqmYASrZuaybASvZtqmYASzYt6qZASzYu6+dASzXwLWkASzXwLSlASzYwLSkASvYwbWlASvYxLioASrYxrqqASnZuq6eASnZu6+gASjZx72tASjax76uASfayL+wASfbysGxASbbzMO0ASfbzcS1ASfbzcS1ASfazsS1ASfazcS1ASfa1My+ASfb08u+ASbc0Mi6ASTe08y9ASLf0cm6ASLg0Me4ASLh0cm5ASHi2dLBAiTf5N3OAifbxL+zAA0CEOhyaFUCD+p3b14CDu2Yj38BDPCimYoBC/KmnY4BDPKqo5MBDPKnn5ABDfGpoJMBD++3rp8BEe24rZ0BE+u3q5sBFem3qpkBF+i1qJgBF+e2qZkBGOe3qpgBGOa1qJUBGOaypZMBGOazpZQBF+axo5EBFuetoI4BFuinmogBFOqnmYgBEuuilYMBEeyWingBD+2XinkBD+11alkAAwEW7J6ZkQEY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";
+
+  // Top mode switch (S23 zero-scroll vs scrollable gallery)
+  const appShell = document.getElementById('appShell');
   const tabBtn3d = document.getElementById('tabBtn3d');
   const tabBtnRenders = document.getElementById('tabBtnRenders');
   const sec3d = document.getElementById('sec3d');
   const secRenders = document.getElementById('secRenders');
+
   tabBtn3d.addEventListener('click', () => {
     tabBtn3d.classList.add('active'); tabBtnRenders.classList.remove('active');
-    sec3d.classList.remove('hidden'); secRenders.classList.add('hidden');
+    sec3d.classList.remove('hidden'); secRenders.classList.remove('active');
+    appShell.classList.remove('scroll-mode'); document.body.classList.remove('scroll-body');
   });
   tabBtnRenders.addEventListener('click', () => {
     tabBtnRenders.classList.add('active'); tabBtn3d.classList.remove('active');
-    secRenders.classList.remove('hidden'); sec3d.classList.add('hidden');
+    secRenders.classList.add('active'); sec3d.classList.add('hidden');
+    appShell.classList.add('scroll-mode'); document.body.classList.add('scroll-body');
+  });
+
+  // Sub-tabs inside Control Dock
+  document.querySelectorAll('.subtab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.subtab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.pane-sec').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.pane).classList.add('active');
+    });
   });
 
   const canvas = document.getElementById('glCanvas');
@@ -421,7 +624,7 @@
   in vec4 vCol;
   uniform vec3 uCamPos;
   uniform float uUplight;
-  uniform int uMatType; // 0: plaster, 1: velvet, 2: walnut, 3: organic crown/roses, 4: crystal glass/wire, 5: emissive LED
+  uniform int uMatType;
   out vec4 fragColor;
 
   void main() {
@@ -433,7 +636,6 @@
     vec3 V = normalize(uCamPos - vWorldPos);
 
     if (uMatType == 4) {
-      // Ultra-clear museum low-iron glass: crystal clear center, crisp Fresnel specular edge!
       float ndv = max(0.0, abs(dot(N, V)));
       float fres = pow(1.0 - ndv, 4.5);
       vec3 gCol = mix(vec3(0.75, 0.90, 0.87), vec3(0.98, 0.99, 0.98), fres);
@@ -442,43 +644,39 @@
       return;
     }
 
-    vec3 lTopPos = vec3(-0.10, 1.62, 0.34);
+    vec3 lTopPos = vec3(-0.12, 1.64, 0.42);
     vec3 Ltop = normalize(lTopPos - vWorldPos);
     float dTop = max(0.0, dot(N, Ltop));
-    float wrapTop = max(0.0, (dot(N, Ltop) + 0.38) / 1.38);
+    float wrapTop = max(0.0, (dot(N, Ltop) + 0.35) / 1.35);
 
-    vec3 lBotPos = vec3(0.0, 0.77, 0.10);
+    vec3 lBotPos = vec3(0.0, 0.77, 0.12);
     vec3 Lbot = normalize(lBotPos - vWorldPos);
     float distBot = length(lBotPos - vWorldPos);
-    float attenBot = 1.0 / (1.0 + 2.8 * distBot * distBot);
+    float attenBot = 1.0 / (1.0 + 2.6 * distBot * distBot);
     float dBot = max(0.0, dot(N, Lbot)) * attenBot * uUplight;
 
     vec3 base = vCol.rgb;
     if (uMatType == 2) {
       float grain = sin(vWorldPos.x * 90.0 + sin(vWorldPos.y * 18.0) * 2.5) * 0.5 + 0.5;
       base *= (0.76 + 0.36 * grain);
-    } else if (uMatType == 0) {
-      float pit = fract(sin(dot(floor(vWorldPos * 380.0), vec3(12.9898, 78.233, 37.719))) * 43758.5453);
-      if (pit > 0.94) base *= 0.86;
     }
 
-    vec3 col = base * 0.14;
+    vec3 col = base * 0.16;
     if (uMatType == 0) {
-      col += base * vec3(1.08, 0.99, 0.88) * (0.58 * dTop + 0.34 * wrapTop);
-      col += base * vec3(1.22, 0.70, 0.52) * (1.18 * dBot);
+      col += base * vec3(1.07, 0.99, 0.90) * (0.60 * dTop + 0.34 * wrapTop);
+      col += base * vec3(1.20, 0.72, 0.54) * (1.12 * dBot);
       vec3 H = normalize(Ltop + V);
-      col += vec3(0.20, 0.18, 0.15) * pow(max(0.0, dot(N, H)), 24.0);
+      col += vec3(0.16, 0.15, 0.13) * pow(max(0.0, dot(N, H)), 24.0);
     } else if (uMatType == 1) {
       float rim = pow(1.0 - max(0.0, dot(N, V)), 2.4);
       col += base * (0.78 * dTop + 0.58 * uUplight * 0.42) + base * 0.50 * rim;
     } else {
-      // Rich organic shading for Crown of Thorns & Rose Wreath petals!
       col += base * vec3(1.06, 0.98, 0.90) * (0.62 * dTop + 0.32 * wrapTop + 0.52 * dBot);
       vec3 H = normalize(Ltop + V);
       col += vec3(0.11, 0.09, 0.08) * pow(max(0.0, dot(N, H)), 18.0);
     }
 
-    col = col / (col + vec3(0.78));
+    col = col / (col + vec3(0.80));
     col = pow(col, vec3(1.0 / 2.15));
     fragColor = vec4(col, vCol.a);
   }`;
@@ -559,7 +757,7 @@
         this.addQuad(ids[0],ids[1],ids[2],ids[3]);
       }
     }
-    addLoftedSurface(samplesU, samplesV, evalRingPt, capStartChalk, capEndChalk, baseCol, chalkCol) {
+    addLoftedSurface(samplesU, samplesV, evalRingPt) {
       const grid = [];
       for (let iu=0; iu<=samplesU; iu++) {
         const u = iu / samplesU, row = [];
@@ -577,60 +775,34 @@
           const dv = [pv1[0]-pv0[0], pv1[1]-pv0[1], pv1[2]-pv0[2]];
           let nx = dv[1]*du[2]-dv[2]*du[1], ny = dv[2]*du[0]-dv[0]*du[2], nz = dv[0]*du[1]-dv[1]*du[0];
           let nl = Math.hypot(nx,ny,nz)||1;
-          idRow.push(this.addVert(p, [nx/nl, ny/nl, nz/nl], grid[iu][iv].c || baseCol));
+          idRow.push(this.addVert(p, [nx/nl, ny/nl, nz/nl], grid[iu][iv].c));
         }
         idGrid.push(idRow);
       }
       for (let iu=0; iu<samplesU; iu++)
         for (let iv=0; iv<samplesV; iv++)
           this.addQuad(idGrid[iu][iv], idGrid[iu][iv+1], idGrid[iu+1][iv+1], idGrid[iu+1][iv]);
-
-      if (capStartChalk) {
-        let cx=0,cy=0,cz=0;
-        for (let iv=0; iv<samplesV; iv++) { const p=grid[0][iv].p; cx+=p[0]; cy+=p[1]; cz+=p[2]; }
-        const cId = this.addVert([cx/samplesV-0.003, cy/samplesV, cz/samplesV], [-1,0,0], chalkCol);
-        for (let iv=0; iv<samplesV; iv++) {
-          const i0 = this.addVert(grid[0][iv].p, [-0.95, 0.2*Math.sin(iv*3), 0.2*Math.cos(iv*2)], chalkCol);
-          const i1 = this.addVert(grid[0][iv+1].p, [-0.95, 0.2*Math.sin(iv*3+1), 0.2*Math.cos(iv*2+1)], chalkCol);
-          this.addTri(cId, i1, i0);
-        }
-      }
-      if (capEndChalk) {
-        let cx=0,cy=0,cz=0;
-        for (let iv=0; iv<samplesV; iv++) { const p=grid[samplesU][iv].p; cx+=p[0]; cy+=p[1]; cz+=p[2]; }
-        const cId = this.addVert([cx/samplesV+0.002, cy/samplesV, cz/samplesV], [1,0,0], chalkCol);
-        for (let iv=0; iv<samplesV; iv++) {
-          const i0 = this.addVert(grid[samplesU][iv].p, [0.95, 0.2*Math.cos(iv*3), 0.2*Math.sin(iv*3)], chalkCol);
-          const i1 = this.addVert(grid[samplesU][iv+1].p, [0.95, 0.2*Math.cos(iv*3+1), 0.2*Math.sin(iv*3+1)], chalkCol);
-          this.addTri(cId, i0, i1);
-        }
-      }
     }
-    // Helper: Smooth cupped rose blossom at (cx, cy, cz) with concentric layered petals + green sepals!
     addSculptedRose(cx, cy, cz, scale, petalCol, coreCol) {
-      // Green calyx base
       const leafCol = [0.14, 0.22, 0.11, 1.0];
       this.addLoftedSurface(5, 12, (u, th) => {
         const r = 0.011 * scale * Math.sin(u * Math.PI * 0.85) * (1.0 + 0.18 * Math.cos(th * 5.0));
         return { p: [cx + Math.cos(th)*r, cy + u * 0.008 * scale, cz + Math.sin(th)*r], c: leafCol };
-      }, false, false, leafCol, leafCol);
-
-      // 3 concentric ruffled cup rings (outer, mid, inner bud) with smooth outward normals!
+      });
       const layers = [
         { rMax: 0.021, hMax: 0.017, lobes: 5, ph: 0.0, col: petalCol },
         { rMax: 0.0145, hMax: 0.020, lobes: 5, ph: 0.62, col: petalCol },
         { rMax: 0.0085, hMax: 0.022, lobes: 4, ph: 1.25, col: coreCol }
       ];
       for (const L of layers) {
-        this.addLoftedSurface(8, 24, (u, th) => {
-          // u=0 bottom center -> u=1 curled petal lip!
+        this.addLoftedSurface(8, 22, (u, th) => {
           const flare = Math.pow(u, 0.68);
           const wave = 1.0 + 0.14 * Math.sin(th * L.lobes + L.ph + u * 1.4);
           const curlOut = (u > 0.72) ? 0.0028 * Math.pow((u - 0.72)/0.28, 1.5) : 0.0;
           const r = (L.rMax * flare * wave + curlOut) * scale;
           const y = cy + (0.004 + L.hMax * Math.sin(u * Math.PI * 0.56) + 0.002 * Math.cos(th * L.lobes + L.ph) * u) * scale;
           return { p: [cx + Math.cos(th)*r, y, cz + Math.sin(th)*r], c: L.col };
-        }, false, false, L.col, L.col);
+        });
       }
     }
     upload() {
@@ -647,195 +819,206 @@
     }
   }
 
-  const PLASTER = [0.90, 0.86, 0.79, 1.0], CHALK = [0.97, 0.96, 0.93, 1.0];
+  // --- Decode Baked RLE Real-Relic Grid & Construct Watertight 3D Sculpted Mesh! ---
+  function decodeBakedRelicMesh(b64, cellMm, mode) {
+    const bin = atob(b64);
+    const bytes = new Uint8Array(bin.length);
+    for (let i=0; i<bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    const W = bytes[0] | (bytes[1] << 8);
+    const H = bytes[2] | (bytes[3] << 8);
 
-  function buildLeftHandRelicMesh() {
-    const mb = new MeshBuilder();
-    mb.addLoftedSurface(28, 32, (u, th) => {
-      let x = -0.068 + u * 0.102;
-      if (u < 0.08) x += 0.005 * Math.sin(th * 5.0 + 1.2) * (1.0 - u/0.08);
-      if (u > 0.90) x += 0.006 * Math.cos(th * 4.0) * ((u - 0.90)/0.10);
-      const wz = 0.033 + 0.017 * Math.sin(u * Math.PI * 0.72);
-      const hy = 0.021 - 0.006 * u;
-      const spineY = 0.005 * Math.sin(u * Math.PI);
-      let z = Math.cos(th) * wz, y = Math.sin(th) * hy + spineY;
-      if (Math.sin(th) < -0.1 && u > 0.15 && u < 0.90)
-        y += 0.0075 * Math.sin(((u - 0.15)/0.75) * Math.PI) * Math.pow(-Math.sin(th), 1.4);
-      let c = PLASTER;
-      if (Math.sin(th) > 0.7 && Math.abs(Math.cos(th)) < 0.18 && u > 0.35 && u < 0.72) {
-        y -= 0.0028 * Math.sin(((u - 0.35)/0.37)*Math.PI);
-        c = [0.76, 0.72, 0.65, 1.0];
+    const mf   = Array.from({ length: W }, () => new Uint8Array(H));
+    const topM = Array.from({ length: W }, () => new Float32Array(H));
+    const botM = Array.from({ length: W }, () => new Float32Array(H));
+    const colM = Array.from({ length: W }, () => Array(H).fill(null));
+
+    let ptr = 4, idx = 0;
+    const s8 = v => (v > 127 ? v - 256 : v);
+    while (ptr < bytes.length && idx < W * H) {
+      const tag = bytes[ptr++];
+      if (tag === 0) {
+        const run = bytes[ptr++];
+        idx += run;
+      } else {
+        const i = Math.floor(idx / H), j = idx % H;
+        mf[i][j] = tag;
+        // Convert encoded 0.4mm units -> meters!
+        topM[i][j] = (s8(bytes[ptr++]) / 2.5) * 0.001;
+        botM[i][j] = (s8(bytes[ptr++]) / 2.5) * 0.001;
+        const r = bytes[ptr++]/255, g = bytes[ptr++]/255, b = bytes[ptr++]/255;
+        // Slightly warm neutral ivory plaster normalization while preserving dark scorch marks & chalk fractures!
+        colM[i][j] = [
+          Math.min(0.97, r * 0.55 + 0.40),
+          Math.min(0.95, g * 0.55 + 0.38),
+          Math.min(0.91, b * 0.55 + 0.34),
+          1.0
+        ];
+        idx++;
       }
-      if (u < 0.04 || (u > 0.95 && Math.cos(th) > 0.15)) c = CHALK;
-      return { p: [x, y, z], c };
-    }, true, true, PLASTER, CHALK);
-
-    mb.addLoftedSurface(10, 18, (u, th) => {
-      const r = 0.014 * (1.0 - 0.22 * u), jagg = (u > 0.85) ? 0.003 * Math.sin(th * 4.0) : 0.0;
-      return { p: [-0.012 + u*0.032 + jagg, -0.005 - u*0.012 + Math.sin(th)*r*0.88, -0.032 - u*0.022 + Math.cos(th)*r], c: u > 0.86 ? CHALK : PLASTER };
-    }, false, true, PLASTER, CHALK);
-
-    for (let k=0; k<2; k++) {
-      const zOff = k === 0 ? 0.018 : 0.034, len = k === 0 ? 0.022 : 0.014;
-      mb.addLoftedSurface(8, 16, (u, th) => {
-        const r = (k === 0 ? 0.0085 : 0.0075) * (1.0 - 0.12*u), jagg = u > 0.8 ? 0.0035 * Math.cos(th * 3.0 + k) : 0.0;
-        return { p: [0.028 + u*len + jagg, -u*0.005 + Math.sin(th)*r*0.9, zOff + Math.cos(th)*r], c: u > 0.82 ? CHALK : PLASTER };
-      }, false, true, PLASTER, CHALK);
     }
 
-    for (const fg of [{ z0: -0.017, len: 0.072, r0: 0.0088 }, { z0: 0.001, len: 0.078, r0: 0.0092 }]) {
-      mb.addLoftedSurface(18, 18, (u, th) => {
-        const r = fg.r0 * (1.0 - 0.24 * u), jagg = u > 0.90 ? 0.003 * Math.sin(th * 4.0) : 0.0;
-        return { p: [0.028 + u*fg.len + jagg, -0.018 * Math.pow(u, 1.45) + Math.sin(th)*r*0.92, fg.z0 + Math.cos(th)*r], c: u > 0.91 ? CHALK : PLASTER };
-      }, false, true, PLASTER, CHALK);
+    const step = cellMm * 0.001;
+    // Map (i, j, h) -> 3D local coordinates:
+    // mode === 'left': i=X (wrist->fingers), j=Z (thumb->pinky), h=Y (+Y back of hand UP, -Y concave PALM DOWN!)
+    // mode === 'pray': i=X (breadth), j=Y (0=fingertips UP -> H-1=wrists DOWN, so local Y = (0.52*H - j)*step!), h=Z (front/back thickness!)
+    const ptTop = (i, j) => mode === 'left'
+      ? [(i - W * 0.44) * step, topM[i][j], (j - H * 0.48) * step]
+      : [(i - W * 0.50) * step, (H * 0.55 - j) * step, topM[i][j]];
+    const ptBot = (i, j) => mode === 'left'
+      ? [(i - W * 0.44) * step, botM[i][j], (j - H * 0.48) * step]
+      : [(i - W * 0.50) * step, (H * 0.55 - j) * step, botM[i][j]];
+
+    const mb = new MeshBuilder();
+    const topId = Array.from({ length: W }, () => new Int32Array(H).fill(-1));
+    const botId = Array.from({ length: W }, () => new Int32Array(H).fill(-1));
+
+    const getH = (arr, i, j, fallback) => (i>=0 && i<W && j>=0 && j<H && mf[i][j]>0) ? arr[i][j] : fallback;
+
+    for (let i=0; i<W; i++) {
+      for (let j=0; j<H; j++) {
+        if (!mf[i][j]) continue;
+        const hT = topM[i][j], hB = botM[i][j];
+        const dhT_di = (getH(topM, i+1, j, hT) - getH(topM, i-1, j, hT)) / (2 * step);
+        const dhT_dj = (getH(topM, i, j+1, hT) - getH(topM, i, j-1, hT)) / (2 * step);
+        const dhB_di = (getH(botM, i+1, j, hB) - getH(botM, i-1, j, hB)) / (2 * step);
+        const dhB_dj = (getH(botM, i, j+1, hB) - getH(botM, i, j-1, hB)) / (2 * step);
+
+        let nT, nB;
+        if (mode === 'left') {
+          let lT = Math.hypot(-dhT_di, 1, -dhT_dj); nT = [-dhT_di/lT, 1/lT, -dhT_dj/lT];
+          let lB = Math.hypot(dhB_di, -1, dhB_dj);  nB = [dhB_di/lB, -1/lB, dhB_dj/lB];
+        } else {
+          let lT = Math.hypot(-dhT_di, dhT_dj, 1);  nT = [-dhT_di/lT, dhT_dj/lT, 1/lT];
+          let lB = Math.hypot(dhB_di, -dhB_dj, -1); nB = [dhB_di/lB, -dhB_dj/lB, -1/lB];
+        }
+        const cTop = colM[i][j];
+        const cBot = [0.87, 0.83, 0.76, 1.0];
+        topId[i][j] = mb.addVert(ptTop(i, j), nT, cTop);
+        botId[i][j] = mb.addVert(ptBot(i, j), nB, cBot);
+      }
+    }
+
+    // Connect Top & Bottom Surface Quads
+    for (let i=0; i<W-1; i++) {
+      for (let j=0; j<H-1; j++) {
+        if (mf[i][j] && mf[i+1][j] && mf[i+1][j+1] && mf[i][j+1]) {
+          if (mode === 'left') {
+            mb.addQuad(topId[i][j], topId[i][j+1], topId[i+1][j+1], topId[i+1][j]);
+            mb.addQuad(botId[i][j], botId[i+1][j], botId[i+1][j+1], botId[i][j+1]);
+          } else {
+            mb.addQuad(topId[i][j], topId[i+1][j], topId[i+1][j+1], topId[i][j+1]);
+            mb.addQuad(botId[i][j], botId[i][j+1], botId[i+1][j+1], botId[i+1][j]);
+          }
+        }
+      }
+    }
+
+    // Stitch Watertight 3D Perimeter Side & Fracture Cliffs!
+    const CHALK = [0.96, 0.95, 0.92, 1.0];
+    const SMOOTH_EDGE = [0.88, 0.84, 0.77, 1.0];
+    const dirs = [
+      { di: 1, dj: 0, edgePts: (i,j) => [[i+0.5, j-0.5], [i+0.5, j+0.5]] },
+      { di:-1, dj: 0, edgePts: (i,j) => [[i-0.5, j+0.5], [i-0.5, j-0.5]] },
+      { di: 0, dj: 1, edgePts: (i,j) => [[i+0.5, j+0.5], [i-0.5, j+0.5]] },
+      { di: 0, dj:-1, edgePts: (i,j) => [[i-0.5, j-0.5], [i+0.5, j-0.5]] }
+    ];
+    for (let i=0; i<W; i++) {
+      for (let j=0; j<H; j++) {
+        if (!mf[i][j]) continue;
+        const isFrac = (mf[i][j] === 2);
+        const wallCol = isFrac ? CHALK : SMOOTH_EDGE;
+        for (const d of dirs) {
+          const ni = i + d.di, nj = j + d.dj;
+          if (ni < 0 || ni >= W || nj < 0 || nj >= H || !mf[ni][nj]) {
+            const [[i0, j0], [i1, j1]] = d.edgePts(i, j);
+            const mkP = (ii, jj, hVal) => mode === 'left'
+              ? [(ii - W * 0.44) * step, hVal, (jj - H * 0.48) * step]
+              : [(ii - W * 0.50) * step, (H * 0.55 - jj) * step, hVal];
+            const t0 = mkP(i0, j0, topM[i][j]), t1 = mkP(i1, j1, topM[i][j]);
+            const b0 = mkP(i0, j0, botM[i][j]), b1 = mkP(i1, j1, botM[i][j]);
+            const wn = mode === 'left' ? [d.di, 0, d.dj] : [d.di, -d.dj, 0];
+            const vt0 = mb.addVert(t0, wn, wallCol), vt1 = mb.addVert(t1, wn, wallCol);
+            const vb1 = mb.addVert(b1, wn, wallCol), vb0 = mb.addVert(b0, wn, wallCol);
+            if (mode === 'left') mb.addQuad(vt0, vt1, vb1, vb0);
+            else mb.addQuad(vt1, vt0, vb0, vb1);
+          }
+        }
+      }
     }
     return mb.upload();
   }
 
-  function buildPrayingHandsRelicMesh() {
+  function buildCrownOfThornsMesh(withStemRose) {
     const mb = new MeshBuilder();
-    for (const side of [-1, 1]) {
-      mb.addLoftedSurface(26, 24, (u, th) => {
-        let y = -0.085 + u * 0.185;
-        if (u < 0.07) y += 0.006 * Math.sin(th * 4.0 + side) * (1.0 - u/0.07);
-        if (u > 0.93) y -= 0.004 * Math.cos(th * 3.0) * ((u - 0.93)/0.07);
-        const wx = (u < 0.25) ? (0.024 + 0.012 * (u/0.25)) : (0.036 * (1.0 - 0.58 * Math.pow((u - 0.25)/0.75, 1.25)));
-        const tz = (u < 0.22) ? 0.016 : (0.015 * (1.0 - 0.48 * u));
-        const gapZ = (u < 0.25) ? 0.014 * Math.pow(1.0 - u/0.25, 1.5) : 0.001;
-        let x = Math.cos(th) * wx, rawZ = Math.sin(th) * tz;
-        if (side * rawZ < 0) rawZ *= 0.22;
-        let z = side * (gapZ + tz * 0.42) + rawZ;
-        if (u > 0.48 && side * rawZ > 0) z += side * 0.0016 * Math.sin(x * 210.0);
-        return { p: [x, y, z], c: (u < 0.04 || u > 0.95) ? CHALK : PLASTER };
-      }, true, true, PLASTER, CHALK);
-    }
-    for (const side of [-1, 1]) {
-      mb.addLoftedSurface(16, 16, (u, th) => {
-        const r = 0.0095 * (1.0 - 0.22 * u);
-        const y = -0.032 + u * 0.068;
-        const x = 0.026 + 0.010 * Math.sin(u * Math.PI * 0.85) + Math.cos(th) * r;
-        const crossZ = side * (0.020 - u * 0.034) + (side === 1 ? 0.005 * Math.sin(u * Math.PI) : -0.002);
-        return { p: [x, y, crossZ + Math.sin(th) * r * 0.88], c: PLASTER };
-      }, false, false, PLASTER, CHALK);
-    }
-    return mb.upload();
-  }
-
-  // --- INDEPENDENT 3D MODEL 1: Crown of Thorns (Centered at local (0, 0.018, 0)!) ---
-  function buildCrownOfThornsMesh() {
-    const mb = new MeshBuilder();
-    const barkDark = [0.22, 0.14, 0.09, 1.0];
-    const barkMid  = [0.28, 0.18, 0.11, 1.0];
-    const spikeTip = [0.36, 0.25, 0.16, 1.0];
-
-    // 4 intertwined braided woody vine rings
+    const barkDark = [0.22, 0.14, 0.09, 1.0], barkMid = [0.29, 0.19, 0.12, 1.0], spikeTip = [0.38, 0.26, 0.17, 1.0];
     for (let strand=0; strand<4; strand++) {
-      const ph = strand * (Math.PI * 0.5);
-      const col = (strand % 2 === 0) ? barkDark : barkMid;
+      const ph = strand * (Math.PI * 0.5), col = (strand % 2 === 0) ? barkDark : barkMid;
       mb.addLoftedSurface(72, 10, (u, th) => {
         const ang = u * Math.PI * 2.0;
-        const R = 0.082 + 0.011 * Math.sin(ang * 5.0 + ph) + 0.004 * Math.cos(ang * 11.0);
-        const cy = 0.018 + 0.010 * Math.cos(ang * 5.0 + ph);
-        const rTube = 0.0044 * (0.85 + 0.3 * Math.sin(ang * 7.0 + strand));
-        // Correct outward tube orientation around torus tangent
+        const R = 0.088 + 0.011 * Math.sin(ang * 5.0 + ph) + 0.004 * Math.cos(ang * 11.0);
+        const cy = 0.015 + 0.010 * Math.cos(ang * 5.0 + ph);
+        const rTube = 0.0045 * (0.85 + 0.3 * Math.sin(ang * 7.0 + strand));
         const radOff = Math.cos(th) * rTube;
-        const px = (R + radOff) * Math.cos(ang);
-        const pz = (R + radOff) * Math.sin(ang);
-        const py = cy + Math.sin(th) * rTube;
-        return { p: [px, py, pz], c: col };
-      }, false, false, col, col);
+        return { p: [(R + radOff)*Math.cos(ang), cy + Math.sin(th)*rTube, (R + radOff)*Math.sin(ang)], c: col };
+      });
     }
-
-    // 42 sharp radial 3D conical thorns jutting outward, upward, and inward!
-    for (let i=0; i<42; i++) {
-      const ang = (i / 42) * Math.PI * 2.0;
-      const ph = (i % 4) * (Math.PI * 0.5);
-      const R = 0.082 + 0.010 * Math.sin(ang * 5.0 + ph);
-      const bx = R * Math.cos(ang), bz = R * Math.sin(ang);
-      const by = 0.018 + 0.009 * Math.cos(ang * 5.0 + ph);
-
-      const outSign = (i % 5 === 0) ? -0.6 : 1.0;
-      const tiltA = ang + 0.32 * ((i % 2) ? 1 : -1);
-      const dx = Math.cos(tiltA) * outSign;
-      const dz = Math.sin(tiltA) * outSign;
-      const dy = (i % 3 === 0) ? 0.65 : ((i % 3 === 1) ? -0.32 : 0.22);
-      const dLen = Math.hypot(dx, dy, dz) || 1;
-      const ux = dx/dLen, uy = dy/dLen, uz = dz/dLen;
-      // Orthogonal basis for 3D cone cross-section
-      let ox = -uz, oy = 0, oz = ux;
-      const ol = Math.hypot(ox, oy, oz) || 1; ox/=ol; oz/=ol;
+    for (let i=0; i<44; i++) {
+      const ang = (i / 44) * Math.PI * 2.0, ph = (i % 4) * (Math.PI * 0.5);
+      const R = 0.088 + 0.010 * Math.sin(ang * 5.0 + ph);
+      const bx = R * Math.cos(ang), bz = R * Math.sin(ang), by = 0.015 + 0.009 * Math.cos(ang * 5.0 + ph);
+      const outSign = (i % 5 === 0) ? -0.65 : 1.0, tiltA = ang + 0.32 * ((i % 2) ? 1 : -1);
+      const dx = Math.cos(tiltA) * outSign, dz = Math.sin(tiltA) * outSign, dy = (i % 3 === 0) ? 0.65 : ((i % 3 === 1) ? -0.32 : 0.22);
+      const dL = Math.hypot(dx, dy, dz) || 1, ux = dx/dL, uy = dy/dL, uz = dz/dL;
+      let ox = -uz, oy = 0, oz = ux; const ol = Math.hypot(ox, oy, oz) || 1; ox/=ol; oz/=ol;
       const qx = uy*oz - uz*oy, qy = uz*ox - ux*oz, qz = ux*oy - uy*ox;
-
-      const spikeLen = 0.024 + 0.008 * (i % 3);
-      mb.addLoftedSurface(5, 8, (u, th) => {
+      const sLen = 0.025 + 0.008 * (i % 3);
+      mb.addLoftedSurface(5, 7, (u, th) => {
         const r = 0.0026 * Math.pow(1.0 - u, 1.15);
-        const c = u > 0.65 ? spikeTip : barkDark;
-        const cx = bx + ux * u * spikeLen + (ox*Math.cos(th) + qx*Math.sin(th)) * r;
-        const cy_ = by + uy * u * spikeLen + (oy*Math.cos(th) + qy*Math.sin(th)) * r;
-        const cz = bz + uz * u * spikeLen + (oz*Math.cos(th) + qz*Math.sin(th)) * r;
-        return { p: [cx, cy_, cz], c };
-      }, false, false, barkDark, spikeTip);
+        return { p: [bx + ux*u*sLen + (ox*Math.cos(th)+qx*Math.sin(th))*r, by + uy*u*sLen + (oy*Math.cos(th)+qy*Math.sin(th))*r, bz + uz*u*sLen + (oz*Math.cos(th)+qz*Math.sin(th))*r], c: u > 0.65 ? spikeTip : barkDark };
+      });
+    }
+    if (withStemRose) {
+      // Climbing slender thorny stem + deep crimson rose extending from rim (matching d0567466.jpg!)
+      mb.addLoftedSurface(18, 8, (u, th) => {
+        const r = 0.0028 * (1.0 - 0.3 * u);
+        const sx = 0.085 + u * 0.115;
+        const sy = 0.018 + 0.055 * Math.sin(u * Math.PI * 0.65);
+        const sz = -0.015 - u * 0.055;
+        return { p: [sx + Math.cos(th)*r, sy + Math.sin(th)*r, sz], c: barkDark };
+      });
+      mb.addSculptedRose(0.200, 0.068, -0.070, 0.95, [0.60, 0.05, 0.10, 1.0], [0.38, 0.02, 0.05, 1.0]);
     }
     return mb.upload();
   }
 
-  // --- INDEPENDENT 3D MODEL 2: Rose Wreath / Floral Crown (장미 화관, Centered at local (0, 0.015, 0)!) ---
   function buildRoseWreathMesh() {
-    const mb = new MeshBuilder();
-    const vineCol = [0.15, 0.24, 0.12, 1.0];
-    const leafCol = [0.18, 0.30, 0.14, 1.0];
-
-    // 2 intertwined lush botanical wreath stems forming the floral crown ring (majorR = 0.076)
+    const mb = new MeshBuilder(), vineCol = [0.15, 0.24, 0.12, 1.0], leafCol = [0.18, 0.30, 0.14, 1.0];
     for (let s=0; s<2; s++) {
       const ph = s * Math.PI;
-      mb.addLoftedSurface(60, 10, (u, th) => {
-        const ang = u * Math.PI * 2.0;
-        const R = 0.075 + 0.006 * Math.sin(ang * 6.0 + ph);
-        const cy = 0.012 + 0.005 * Math.cos(ang * 6.0 + ph);
-        const rTube = 0.0042;
-        const px = (R + Math.cos(th)*rTube) * Math.cos(ang);
-        const pz = (R + Math.cos(th)*rTube) * Math.sin(ang);
-        const py = cy + Math.sin(th)*rTube;
-        return { p: [px, py, pz], c: vineCol };
-      }, false, false, vineCol, vineCol);
+      mb.addLoftedSurface(56, 9, (u, th) => {
+        const ang = u * Math.PI * 2.0, R = 0.074 + 0.006 * Math.sin(ang * 6.0 + ph), rTube = 0.0042;
+        return { p: [(R + Math.cos(th)*rTube)*Math.cos(ang), 0.012 + 0.005*Math.cos(ang*6.0+ph) + Math.sin(th)*rTube, (R + Math.cos(th)*rTube)*Math.sin(ang)], c: vineCol };
+      });
     }
-
-    // Botanical rose leaves tucked around the floral crown
     for (let i=0; i<18; i++) {
-      const ang = (i / 18) * Math.PI * 2.0 + 0.15;
-      const side = (i % 2 === 0) ? 1.0 : -0.75;
-      const bx = 0.076 * Math.cos(ang), bz = 0.076 * Math.sin(ang);
-      mb.addLoftedSurface(6, 8, (u, th) => {
+      const ang = (i / 18) * Math.PI * 2.0 + 0.15, side = (i % 2 === 0) ? 1.0 : -0.75;
+      const bx = 0.075 * Math.cos(ang), bz = 0.075 * Math.sin(ang);
+      mb.addLoftedSurface(5, 7, (u, th) => {
         const w = 0.009 * Math.sin(u * Math.PI);
-        const lx = bx + Math.cos(ang)*side*u*0.026 - Math.sin(ang)*Math.cos(th)*w;
-        const lz = bz + Math.sin(ang)*side*u*0.026 + Math.cos(ang)*Math.cos(th)*w;
-        const ly = 0.012 + 0.005 * Math.sin(u * Math.PI) + Math.sin(th)*0.0012;
-        return { p: [lx, ly, lz], c: leafCol };
-      }, false, false, leafCol, leafCol);
+        return { p: [bx + Math.cos(ang)*side*u*0.026 - Math.sin(ang)*Math.cos(th)*w, 0.012 + 0.005*Math.sin(u*Math.PI) + Math.sin(th)*0.0012, bz + Math.sin(ang)*side*u*0.026 + Math.cos(ang)*Math.cos(th)*w], c: leafCol };
+      });
     }
-
-    // 9 Lush Sculpted Roses arranged around the Floral Wreath (Crimson Velvet & Antique Ivory Roses!)
-    const crimsonOuter = [0.62, 0.06, 0.11, 1.0], crimsonCore = [0.42, 0.03, 0.06, 1.0];
-    const ivoryOuter   = [0.91, 0.86, 0.77, 1.0], ivoryCore   = [0.82, 0.74, 0.63, 1.0];
-
-    for (let i=0; i<9; i++) {
-      const ang = (i / 9) * Math.PI * 2.0 + 0.2;
-      const R = 0.075 + ((i % 2 === 0) ? 0.004 : -0.003);
-      const rx = R * Math.cos(ang), rz = R * Math.sin(ang);
-      const isCrimson = (i % 2 === 0);
-      const sc = 0.92 + 0.18 * ((i * 7) % 3) * 0.5;
-      mb.addSculptedRose(
-        rx, 0.012, rz, sc,
-        isCrimson ? crimsonOuter : ivoryOuter,
-        isCrimson ? crimsonCore  : ivoryCore
-      );
+    const cOut = [0.62, 0.06, 0.11, 1.0], cCore = [0.42, 0.03, 0.06, 1.0], iOut = [0.91, 0.86, 0.77, 1.0], iCore = [0.82, 0.74, 0.63, 1.0];
+    for (let i=0; i<10; i++) {
+      const ang = (i / 10) * Math.PI * 2.0 + 0.2, R = 0.073 + ((i % 2 === 0) ? 0.004 : -0.004);
+      const isC = (i % 2 === 0), sc = 0.94 + 0.16 * ((i * 7) % 3) * 0.5;
+      mb.addSculptedRose(R * Math.cos(ang), 0.012, R * Math.sin(ang), sc, isC ? cOut : iOut, isC ? cCore : iCore);
     }
     return mb.upload();
   }
 
   function buildWalnutStandMesh() {
-    const mb = new MeshBuilder();
-    const W = 0.50, D = 0.42, H = 0.75, wd = [0.22, 0.13, 0.08, 1.0], wt = [0.16, 0.09, 0.05, 1.0];
+    const mb = new MeshBuilder(), W = 0.50, D = 0.42, H = 0.75, wd = [0.22, 0.13, 0.08, 1.0], wt = [0.16, 0.09, 0.05, 1.0];
     mb.addBox(0, H/2, 0, W, H, D, wd);
     mb.addBox(0, H - 0.018, 0, W + 0.018, 0.036, D + 0.018, wt);
     mb.addBox(0, 0.02, 0, W - 0.02, 0.04, D - 0.02, wt);
@@ -845,47 +1028,30 @@
     mb.addBox(0, H*0.15, D*0.502, W*0.88, 0.045, 0.012, wt);
     return mb.upload();
   }
-
-  function buildVelvetMesh() {
-    const mb = new MeshBuilder();
-    mb.addBox(0, 0.5, 0, 0.43, 1.0, 0.35, [0.58, 0.05, 0.08, 1.0]);
-    return mb.upload();
-  }
-
+  function buildVelvetMesh() { const mb = new MeshBuilder(); mb.addBox(0, 0.5, 0, 0.43, 1.0, 0.35, [0.58, 0.05, 0.08, 1.0]); return mb.upload(); }
   function buildUplightStripMesh() {
     const mb = new MeshBuilder(), glow = [1.0, 0.78, 0.44, 1.0];
-    mb.addBox(0, 0.753,  0.182, 0.45, 0.005, 0.008, glow);
-    mb.addBox(0, 0.753, -0.182, 0.45, 0.005, 0.008, glow);
-    mb.addBox(-0.222, 0.753, 0, 0.008, 0.005, 0.36, glow);
-    mb.addBox( 0.222, 0.753, 0, 0.008, 0.005, 0.36, glow);
+    mb.addBox(0, 0.753,  0.182, 0.45, 0.005, 0.008, glow); mb.addBox(0, 0.753, -0.182, 0.45, 0.005, 0.008, glow);
+    mb.addBox(-0.222, 0.753, 0, 0.008, 0.005, 0.36, glow); mb.addBox( 0.222, 0.753, 0, 0.008, 0.005, 0.36, glow);
     return mb.upload();
   }
-
   function buildGlassBoxMesh() {
     const mb = new MeshBuilder(), W = 0.48, D = 0.40, H = 0.45, cy = 0.75 + H/2;
-    // Ultra-clear museum glass panes + crisp polished 4mm glass corner bevel bars!
-    const gPane = [0.85, 0.94, 0.92, 0.016];
-    const gCorner = [0.78, 0.93, 0.89, 0.36];
-    mb.addBox(0, cy,  D/2, W, H, 0.003, gPane);
-    mb.addBox(0, cy, -D/2, W, H, 0.003, gPane);
-    mb.addBox(-W/2, cy, 0, 0.003, H, D, gPane);
-    mb.addBox( W/2, cy, 0, 0.003, H, D, gPane);
-    // Polished glass edges (so box outline reads cleanly without fogging the interior!)
+    const gPane = [0.85, 0.94, 0.92, 0.016], gCorner = [0.78, 0.93, 0.89, 0.36];
+    mb.addBox(0, cy,  D/2, W, H, 0.003, gPane); mb.addBox(0, cy, -D/2, W, H, 0.003, gPane);
+    mb.addBox(-W/2, cy, 0, 0.003, H, D, gPane); mb.addBox( W/2, cy, 0, 0.003, H, D, gPane);
     for (const sx of [-W/2, W/2]) for (const sz of [-D/2, D/2]) mb.addBox(sx, cy, sz, 0.004, H, 0.004, gCorner);
     for (const sz of [-D/2, D/2]) mb.addBox(0, 0.75 + H, sz, W, 0.005, 0.005, gCorner);
     for (const sx of [-W/2, W/2]) mb.addBox(sx, 0.75 + H, 0, 0.005, 0.005, D, gCorner);
     return mb.upload();
   }
+  function buildWireMesh() { const mb = new MeshBuilder(); mb.addBox(0, 0.5, 0, 0.0012, 1.0, 0.0012, [0.90, 0.92, 0.94, 0.28]); return mb.upload(); }
 
-  function buildWireMesh() {
-    const mb = new MeshBuilder();
-    mb.addBox(0, 0.5, 0, 0.0012, 1.0, 0.0012, [0.90, 0.92, 0.94, 0.28]);
-    return mb.upload();
-  }
-
-  const meshLeftHand = buildLeftHandRelicMesh();
-  const meshPrayHands = buildPrayingHandsRelicMesh();
-  const meshCrownOfThorns = buildCrownOfThornsMesh();
+  // Build REAL Sculpted Relics from Baked Photographic RLE Contours!
+  const meshLeftHand = decodeBakedRelicMesh(LEFT_B64, 1.75, 'left');
+  const meshPrayHands = decodeBakedRelicMesh(PRAY_B64, 2.05, 'pray');
+  const meshCrownPlain = buildCrownOfThornsMesh(false);
+  const meshCrownWithStem = buildCrownOfThornsMesh(true);
   const meshRoseWreath = buildRoseWreathMesh();
   const meshStand = buildWalnutStandMesh();
   const meshVelvet = buildVelvetMesh();
@@ -893,16 +1059,17 @@
   const meshGlass = buildGlassBoxMesh();
   const meshWire = buildWireMesh();
 
+  // Default State = Exact d0567466.jpg Composition!
   const state = {
-    yaw: 0.06, pitch: 0.08, dist: 0.90, target: [0.0, 1.00, 0.0],
-    wristRoll: 0, leftPitch: -28, leftHeight: 1.13,
-    prayAngle: 52, prayLift: 0.0, spread: 1.0,
-    showThorn: true, thornH: 0.005, thornTilt: 0, thornX: -0.095, thornScale: 1.0,
-    showRose: true, roseH: 0.005, roseTilt: 12, roseX: 0.095, roseScale: 1.0,
-    redH: 0.075, uplight: 1.25, showGlass: true
+    yaw: 0.04, pitch: 0.06, dist: 0.88, target: [0.0, 1.00, 0.0],
+    wristRoll: -50, leftPitch: -35, leftHeight: 1.05, leftX: -0.075, leftZ: 0.01,
+    prayAngle: 50, prayLift: 0.005, prayX: 0.095, prayYaw: 12,
+    showThorn: true, showStemRose: true, thornH: 0.185, thornTilt: 82, thornX: -0.040, thornYaw: 62, thornScale: 1.12,
+    showRose: true, roseH: 0.010, roseTilt: 10, roseX: 0.095, roseScale: 1.08,
+    redH: 0.075, uplight: 1.30, showGlass: true
   };
 
-  // Mouse & Touch Controls
+  // Mouse & Galaxy S23 Touch Orbit / Pinch Zoom
   let dragging = false, panMode = false, lx = 0, ly = 0, pinchDist0 = 0;
   canvas.addEventListener('contextmenu', e => e.preventDefault());
   canvas.addEventListener('mousedown', e => { dragging = true; panMode = (e.button === 2 || e.shiftKey); lx = e.clientX; ly = e.clientY; });
@@ -938,10 +1105,8 @@
   canvas.addEventListener('touchend', () => { dragging = false; pinchDist0 = 0; });
 
   function updateStatus() {
-    const thCm = Math.round((0.75 + state.redH + state.thornH) * 100);
-    const rsCm = Math.round((0.75 + state.redH + state.roseH) * 100);
     document.getElementById('statusBadge').textContent =
-      `예수님 왼손: 손바닥 하향(${state.wristRoll}°) · 합장손: ${state.prayAngle}° · 가시면류관: ${thCm}cm(${state.thornTilt}°) · 장미화관: ${rsCm}cm(${state.roseTilt}°)`;
+      `왼손유물(${state.leftPitch}°, 회전${state.wristRoll}°) · 가시관(높이+${Math.round(state.thornH*100)}cm, 세움${state.thornTilt}°) · 합장손(${state.prayAngle}°)`;
   }
 
   const bindSlider = (id, key, scale, fmt) => {
@@ -952,16 +1117,21 @@
       updateStatus();
     });
   };
-  bindSlider('slWristRoll', 'wristRoll', 1, v => `${v}° (${Math.abs(v)<=12?'정하향':(v>0?'전방':'후방')})`);
+  bindSlider('slWristRoll', 'wristRoll', 1, v => `${v}° (${v<-25?'파편노출':(Math.abs(v)<=15?'정하향':'반대회전')})`);
   bindSlider('slLeftPitch', 'leftPitch', 1, v => `${v}°`);
   bindSlider('slLeftHeight', 'leftHeight', 0.01, v => `${v} cm`);
+  bindSlider('slLeftX', 'leftX', 0.01, v => `${v>=0?'+':''}${v.toFixed(1)} cm`);
+  bindSlider('slLeftZ', 'leftZ', 0.01, v => `${v>=0?'+':''}${v.toFixed(1)} cm`);
+
   bindSlider('slPrayAngle', 'prayAngle', 1, v => `${v}°`);
   bindSlider('slPrayLift', 'prayLift', 0.01, v => `${v>=0?'+':''}${v.toFixed(1)} cm`);
-  bindSlider('slSpread', 'spread', 0.01, v => `${v}%`);
+  bindSlider('slPrayX', 'prayX', 0.01, v => `${v>=0?'+':''}${v.toFixed(1)} cm`);
+  bindSlider('slPrayYaw', 'prayYaw', 1, v => `${v}°`);
 
   bindSlider('slThornH', 'thornH', 0.01, v => `+${v.toFixed(1)} cm`);
-  bindSlider('slThornTilt', 'thornTilt', 1, v => `${v}°`);
+  bindSlider('slThornTilt', 'thornTilt', 1, v => `${v}°${Math.abs(v)>65?'(수직)':''}`);
   bindSlider('slThornX', 'thornX', 0.01, v => `${v>=0?'+':''}${v.toFixed(1)} cm`);
+  bindSlider('slThornYaw', 'thornYaw', 1, v => `${v}°`);
   bindSlider('slThornScale', 'thornScale', 0.01, v => `${v}%`);
 
   bindSlider('slRoseH', 'roseH', 0.01, v => `+${v.toFixed(1)} cm`);
@@ -974,49 +1144,57 @@
 
   document.getElementById('chkGlass').addEventListener('change', e => state.showGlass = e.target.checked);
   document.getElementById('chkThorn').addEventListener('change', e => state.showThorn = e.target.checked);
+  document.getElementById('chkStemRose').addEventListener('change', e => state.showStemRose = e.target.checked);
   document.getElementById('chkRose').addEventListener('change', e => state.showRose = e.target.checked);
 
-  function applySliderValues(vals) {
+  function applyPreset(vals, stemRose) {
+    state.showStemRose = stemRose;
+    document.getElementById('chkStemRose').checked = stemRose;
     for (const [id, v] of Object.entries(vals)) {
       const el = document.getElementById(id);
       if (el) { el.value = v; el.dispatchEvent(new Event('input')); }
     }
   }
 
-  // 3 Sculpture Layout Presets!
   const layoutPresets = {
-    split: {
-      slWristRoll: 0, slLeftPitch: -28, slLeftHeight: 113, slPrayAngle: 52, slPrayLift: 0, slSpread: 100,
-      slThornH: 0.5, slThornTilt: 0, slThornX: -9.5, slThornScale: 100,
-      slRoseH: 0.5, slRoseTilt: 12, slRoseX: 9.5, slRoseScale: 100, slRedH: 7.5
+    portal: {
+      slWristRoll: -50, slLeftPitch: -35, slLeftHeight: 105, slLeftX: -7.5, slLeftZ: 1.0,
+      slPrayAngle: 50, slPrayLift: 0.5, slPrayX: 9.5, slPrayYaw: 12,
+      slThornH: 18.5, slThornTilt: 82, slThornX: -4.0, slThornYaw: 62, slThornScale: 112,
+      slRoseH: 1.0, slRoseTilt: 10, slRoseX: 9.5, slRoseScale: 108, slRedH: 7.5
     },
-    floatThorn: {
-      slWristRoll: 0, slLeftPitch: -26, slLeftHeight: 115, slPrayAngle: 54, slPrayLift: 1.5, slSpread: 95,
-      slThornH: 21.0, slThornTilt: -24, slThornX: -6.5, slThornScale: 95,
-      slRoseH: 1.0, slRoseTilt: 18, slRoseX: 9.0, slRoseScale: 105, slRedH: 7.5
+    palmDownSplit: {
+      slWristRoll: -8, slLeftPitch: -26, slLeftHeight: 112, slLeftX: -8.0, slLeftZ: 0.5,
+      slPrayAngle: 52, slPrayLift: 0.5, slPrayX: 9.5, slPrayYaw: 12,
+      slThornH: 0.5, slThornTilt: 0, slThornX: -9.5, slThornYaw: 0, slThornScale: 100,
+      slRoseH: 0.5, slRoseTilt: 10, slRoseX: 9.5, slRoseScale: 105, slRedH: 7.5
     },
     nested: {
-      slWristRoll: 0, slLeftPitch: -30, slLeftHeight: 114, slPrayAngle: 55, slPrayLift: 2.0, slSpread: 92,
-      slThornH: 1.0, slThornTilt: -18, slThornX: 7.5, slThornScale: 112,
-      slRoseH: 4.5, slRoseTilt: 22, slRoseX: 8.5, slRoseScale: 92, slRedH: 7.5
+      slWristRoll: -32, slLeftPitch: -32, slLeftHeight: 112, slLeftX: -7.5, slLeftZ: 0.5,
+      slPrayAngle: 54, slPrayLift: 1.5, slPrayX: 8.5, slPrayYaw: 12,
+      slThornH: 1.0, slThornTilt: -18, slThornX: 7.5, slThornYaw: 15, slThornScale: 112,
+      slRoseH: 4.5, slRoseTilt: 22, slRoseX: 8.5, slRoseScale: 94, slRedH: 7.5
     }
   };
   document.querySelectorAll('[data-preset]').forEach(btn => {
-    btn.addEventListener('click', () => applySliderValues(layoutPresets[btn.dataset.preset]));
+    btn.addEventListener('click', () => {
+      const k = btn.dataset.preset;
+      applyPreset(layoutPresets[k], k === 'portal');
+    });
   });
 
   const camPresets = {
-    closeup: { yaw: 0.05, pitch: 0.08, dist: 0.88, target: [0.0, 1.00, 0.0] },
+    closeup: { yaw: 0.04, pitch: 0.06, dist: 0.88, target: [0.0, 1.00, 0.0] },
     full:    { yaw: 0.04, pitch: 0.08, dist: 1.95, target: [0.0, 0.64, 0.0] },
-    under:   { yaw: 0.22, pitch:-0.42, dist: 0.72, target: [-0.02, 1.05, 0.0] },
+    under:   { yaw: 0.22, pitch:-0.42, dist: 0.72, target: [-0.02, 1.04, 0.0] },
     side:    { yaw: 1.48, pitch: 0.05, dist: 0.95, target: [0.0, 1.00, 0.0] },
-    quarter: { yaw: 0.52, pitch: 0.24, dist: 1.04, target: [0.0, 0.98, 0.0] }
+    quarter: { yaw: 0.52, pitch: 0.22, dist: 1.04, target: [0.0, 0.99, 0.0] }
   };
-  document.querySelectorAll('.cam-btn').forEach(btn => {
+  document.querySelectorAll('[data-cam]').forEach(btn => {
     btn.addEventListener('click', () => { const p = camPresets[btn.dataset.cam]; state.yaw=p.yaw; state.pitch=p.pitch; state.dist=p.dist; state.target=[...p.target]; });
   });
   document.getElementById('btnReset').addEventListener('click', () => {
-    applySliderValues(layoutPresets.split);
+    applyPreset(layoutPresets.portal, true);
     Object.assign(state, { ...camPresets.closeup, target: [...camPresets.closeup.target] });
   });
 
@@ -1027,19 +1205,22 @@
 
     const mThorn = mat4Mul(
       mat4Translate(state.thornX, velvetTop + state.thornH, 0.005),
-      mat4Mul(mat4RotZ(state.thornTilt * Math.PI / 180.0), mat4Scale(state.thornScale, state.thornScale, state.thornScale))
+      mat4Mul(
+        mat4RotY(state.thornYaw * Math.PI / 180.0),
+        mat4Mul(mat4RotZ(state.thornTilt * Math.PI / 180.0), mat4Scale(state.thornScale, state.thornScale, state.thornScale))
+      )
     );
     const mRose = mat4Mul(
       mat4Translate(state.roseX, velvetTop + state.roseH, 0.008),
       mat4Mul(mat4RotZ(state.roseTilt * Math.PI / 180.0), mat4Scale(state.roseScale, state.roseScale, state.roseScale))
     );
     const mLeft = mat4Mul(
-      mat4Translate(-0.082 * state.spread, state.leftHeight, 0.005),
+      mat4Translate(state.leftX, state.leftHeight, state.leftZ),
       mat4Mul(mat4RotZ(state.leftPitch * Math.PI / 180.0), mat4RotX(state.wristRoll * Math.PI / 180.0))
     );
     const mPray = mat4Mul(
-      mat4Translate(0.095 * state.spread, velvetTop + 0.062 + state.prayLift, 0.008),
-      mat4Mul(mat4RotZ((90.0 - state.prayAngle) * Math.PI / 180.0), mat4RotY(0.18))
+      mat4Translate(state.prayX, velvetTop + 0.068 + state.prayLift, 0.008),
+      mat4Mul(mat4RotZ((90.0 - state.prayAngle) * Math.PI / 180.0), mat4RotY(state.prayYaw * Math.PI / 180.0))
     );
     return { velvetTop, mStand, mVelvet, mThorn, mRose, mLeft, mPray };
   }
@@ -1072,30 +1253,25 @@
       gl.uniform1f(uUplight, state.uplight);
 
       const tf = getSceneTransforms();
+      const activeCrown = state.showStemRose ? meshCrownWithStem : meshCrownPlain;
+
       drawMesh(meshStand, tf.mStand, 2);
       drawMesh(meshVelvet, tf.mVelvet, 1);
       drawMesh(meshUplight, mat4Identity(), 5);
-      if (state.showThorn) drawMesh(meshCrownOfThorns, tf.mThorn, 3);
+      if (state.showThorn) drawMesh(activeCrown, tf.mThorn, 3);
       if (state.showRose)  drawMesh(meshRoseWreath, tf.mRose, 3);
       drawMesh(meshLeftHand, tf.mLeft, 0);
       drawMesh(meshPrayHands, tf.mPray, 0);
 
       if (state.showGlass) {
         gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false);
-        // Suspension wires for Left Hand (and for Crown of Thorns if lifted into mid-air > 4cm!)
-        for (const a of [[-0.045, 0.01, 0.0], [0.005, 0.01, -0.012], [0.025, 0.005, 0.012]]) {
+        for (const a of [[-0.048, 0.01, 0.0], [0.012, 0.01, -0.014], [0.032, 0.005, 0.014]]) {
           const wp = transformPt(tf.mLeft, a), hWire = Math.max(0.01, 1.20 - wp[1]);
           drawMesh(meshWire, mat4Mul(mat4Translate(wp[0], wp[1], wp[2]), mat4Scale(1, hWire, 1)), 4);
         }
         if (state.showThorn && state.thornH > 0.04) {
-          for (const a of [[-0.075, 0.02, 0.0], [0.075, 0.02, 0.0]]) {
+          for (const a of [[0.082, 0.01, 0.0], [0.0, 0.01, 0.082]]) {
             const wp = transformPt(tf.mThorn, a), hWire = Math.max(0.01, 1.20 - wp[1]);
-            drawMesh(meshWire, mat4Mul(mat4Translate(wp[0], wp[1], wp[2]), mat4Scale(1, hWire, 1)), 4);
-          }
-        }
-        if (state.showRose && state.roseH > 0.04) {
-          for (const a of [[-0.070, 0.02, 0.0], [0.070, 0.02, 0.0]]) {
-            const wp = transformPt(tf.mRose, a), hWire = Math.max(0.01, 1.20 - wp[1]);
             drawMesh(meshWire, mat4Mul(mat4Translate(wp[0], wp[1], wp[2]), mat4Scale(1, hWire, 1)), 4);
           }
         }
@@ -1107,18 +1283,19 @@
   }
   requestAnimationFrame(render);
 
-  document.getElementById('btnExportObj').addEventListener('click', () => {
+  function exportObj() {
     const tf = getSceneTransforms();
+    const activeCrown = state.showStemRose ? meshCrownWithStem : meshCrownPlain;
     const parts = [
       ['Walnut_Stand_120cm', meshStand, tf.mStand],
       ['Crimson_Velvet_Altar', meshVelvet, tf.mVelvet],
-      ...(state.showThorn ? [['Crown_Of_Thorns', meshCrownOfThorns, tf.mThorn]] : []),
+      ...(state.showThorn ? [['Crown_Of_Thorns', activeCrown, tf.mThorn]] : []),
       ...(state.showRose  ? [['Rose_Wreath_Floral_Crown', meshRoseWreath, tf.mRose]] : []),
-      ['Relic_Left_Hand_PalmDown', meshLeftHand, tf.mLeft],
-      ['Relic_Praying_Hands', meshPrayHands, tf.mPray],
+      ['Relic_Left_Hand_Fragment', meshLeftHand, tf.mLeft],
+      ['Relic_Praying_Hands_Fragment', meshPrayHands, tf.mPray],
       ['Glass_Vitrine', meshGlass, mat4Identity()]
     ];
-    let lines = ['# Relic Baptismal Diorama 3D Model (Units: Meters, Total Height: 1.20m)\n'], vOff = 1;
+    let lines = ['# Pocheon Relic Diorama 3D Model (Meters, Total Height: 1.20m)\n'], vOff = 1;
     for (const [name, mesh, mat] of parts) {
       lines.push(`o ${name}`);
       const r = mesh.raw, nV = r.pos.length / 3;
@@ -1128,10 +1305,12 @@
       vOff += nV;
     }
     const url = URL.createObjectURL(new Blob([lines.join('\n')], { type: 'text/plain' }));
-    const a = document.createElement('a'); a.href = url; a.download = 'relic_baptism_diorama_120cm.obj'; a.click(); URL.revokeObjectURL(url);
-  });
+    const a = document.createElement('a'); a.href = url; a.download = 'relic_diorama_120cm.obj'; a.click(); URL.revokeObjectURL(url);
+  }
 
-  document.getElementById('btnCapturePng').addEventListener('click', () => {
+  document.getElementById('btnExportObj').addEventListener('click', exportObj);
+  document.getElementById('btnQuickObj').addEventListener('click', exportObj);
+  document.getElementById('btnQuickPng').addEventListener('click', () => {
     const a = document.createElement('a'); a.href = canvas.toDataURL('image/png'); a.download = 'diorama_3d_capture.png'; a.click();
   });
 })();
