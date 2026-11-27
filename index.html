@@ -344,7 +344,7 @@
           </div>
         </div>
         <div id="statusBadge" class="hud-bottom">
-          추천배치 ① 세운 가시관 관통 · 왼손 파편유물(-35°) · 합장손(50°)
+          최종확정안 · 왼손 바로 밑 살짝 기울어진 원형 가시 면류관(16°) · 화관 품 합장손(50°)
         </div>
       </div>
 
@@ -364,16 +364,16 @@
           <div id="panePreset" class="pane-sec active">
             <div class="preset-grid">
               <button data-preset="portal" class="preset-card recommended">
-                <span>① 세운 가시관 관통형 (추천 메인)</span>
-                <span class="sub">수직 가시관 통과 왼손 + 장미화관 합장손</span>
+                <span>① 최종 확정안 (중간높이·원형 기울기 면류관)</span>
+                <span class="sub">왼손 바로 밑 살짝 기울어진 가시 면류관 + 화관 품 합장손</span>
               </button>
               <button data-preset="palmDownSplit" class="preset-card">
-                <span>② 손바닥 정하향 + 좌우 분리안</span>
-                <span class="sub">손바닥 수평 하향 세례 + 바닥 가시관·화관</span>
+                <span>② 좌하단 바닥 가시관 · 우하단 화관 분리안</span>
+                <span class="sub">벨벳 단 위 가시 면류관·장미 화관 수평 배치</span>
               </button>
               <button data-preset="nested" class="preset-card">
-                <span>③ 우하단 가시관·화관 중첩안</span>
-                <span class="sub">가시관·장미화관이 합장손을 함께 감쌈</span>
+                <span>③ 세운 가시관 관통 비교안</span>
+                <span class="sub">수직 가시 면류관 통과 왼손 초기 비교 구도</span>
               </button>
             </div>
             <div class="btn-row">
@@ -444,32 +444,32 @@
                 <input id="chkThorn" type="checkbox" checked style="accent-color:var(--accent);" />가시 면류관 표시
               </label>
               <label style="display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--muted);">
-                <input id="chkStemRose" type="checkbox" checked style="accent-color:var(--accent);" />상단 줄기장미 포함
+                <input id="chkStemRose" type="checkbox" style="accent-color:var(--accent);" />상단 줄기장미 포함
               </label>
             </div>
             <div class="slider-2col">
               <div class="slider-item">
-                <div class="slider-head"><span>높이(바닥기준)</span><span id="valThornH" class="slider-val">+18.5 cm</span></div>
-                <input id="slThornH" type="range" min="0" max="32" step="0.5" value="18.5" />
+                <div class="slider-head"><span>높이(바닥기준)</span><span id="valThornH" class="slider-val">+15.5 cm</span></div>
+                <input id="slThornH" type="range" min="0" max="32" step="0.5" value="15.5" />
               </div>
               <div class="slider-item">
-                <div class="slider-head"><span>세움 각도</span><span id="valThornTilt" class="slider-val">82°(수직)</span></div>
-                <input id="slThornTilt" type="range" min="-90" max="90" value="82" />
+                <div class="slider-head"><span>세움 각도</span><span id="valThornTilt" class="slider-val">16°</span></div>
+                <input id="slThornTilt" type="range" min="-90" max="90" value="16" />
               </div>
             </div>
             <div class="slider-2col">
               <div class="slider-item">
-                <div class="slider-head"><span>좌우 위치(X)</span><span id="valThornX" class="slider-val">-4.0 cm</span></div>
-                <input id="slThornX" type="range" min="-16" max="16" step="0.5" value="-4.0" />
+                <div class="slider-head"><span>좌우 위치(X)</span><span id="valThornX" class="slider-val">-7.5 cm</span></div>
+                <input id="slThornX" type="range" min="-16" max="16" step="0.5" value="-7.5" />
               </div>
               <div class="slider-item">
-                <div class="slider-head"><span>고리 방향(Yaw)</span><span id="valThornYaw" class="slider-val">62°</span></div>
-                <input id="slThornYaw" type="range" min="-90" max="90" value="62" />
+                <div class="slider-head"><span>고리 방향(Yaw)</span><span id="valThornYaw" class="slider-val">90°</span></div>
+                <input id="slThornYaw" type="range" min="-90" max="90" value="90" />
               </div>
             </div>
             <div class="slider-item">
-              <div class="slider-head"><span>가시 면류관 크기 배율</span><span id="valThornScale" class="slider-val">112%</span></div>
-              <input id="slThornScale" type="range" min="65" max="145" value="112" />
+              <div class="slider-head"><span>가시 면류관 크기 배율</span><span id="valThornScale" class="slider-val">88%</span></div>
+              <input id="slThornScale" type="range" min="65" max="145" value="88" />
             </div>
           </div>
 
@@ -527,38 +527,24 @@
     <section id="secRenders" class="renders-view">
       <div class="gallery-grid">
         <div class="img-card">
-          <img src="./studio-master-a-closeup.jpg" alt="마스터 시안 A 근접 뷰" />
+          <img src="./studio-master-a-closeup.jpg" alt="최종 확정 확대한 이미지" />
           <div class="img-cap">
-            <h3>시안 A (근접 뷰) — 파손 관절·성흔 노출 세례 손(↘) + 파손 합장 손 유물(↖)</h3>
-            <p>외측 파손 단면과 성흔을 살린 예수님의 왼손과 우측 하단 장미 위 파손 합장 손 유물의 대각선 조우</p>
+            <h3>확대한 이미지 (최종 확정 클로즈업 컷)</h3>
+            <p>알트 A·C 사이 중간 높이에서 원형 내경이 살짝 보이도록 기울어진 가시 면류관과 장미 화관 품에 폭 안긴 성모 합장 손의 조우</p>
           </div>
         </div>
         <div class="img-card">
-          <img src="./studio-master-b-closeup.jpg" alt="마스터 시안 B 근접 뷰" />
+          <img src="./studio-master-a-full.jpg" alt="최종 확정 스탠드 이미지 한 컷" />
           <div class="img-cap">
-            <h3>시안 B (근접 뷰) — 측면 손 실루엣 손바닥 하향(↘) + 파손 합장 손 유물(↖)</h3>
-            <p>손바닥을 바닥으로 돌려 측면 조각 실루엣이 합장 손 위를 포근히 덮어주며 축복하는 구도</p>
-          </div>
-        </div>
-        <div class="img-card">
-          <img src="./studio-master-a-full.jpg" alt="1.2m 원목 스탠드 전신 뷰 A" />
-          <div class="img-cap">
-            <h3>전신 외관 A — 1.2m 다크 월넛 원목 함 스탠드 (손 높이 1.1m 비례)</h3>
-            <p>하부 원목 함(75cm) + 상부 저철분 무반사 유리함(45cm) + 절반 이하로 낮춘 붉은 벨벳 단(7.5cm) 및 상향 조명</p>
-          </div>
-        </div>
-        <div class="img-card">
-          <img src="./studio-master-b-full.jpg" alt="1.2m 원목 스탠드 전신 뷰 B" />
-          <div class="img-cap">
-            <h3>전신 외관 B — 성당 설치 시 1.1m 눈높이 관람 비례</h3>
-            <p>성인이 서서 살짝 내려다볼 때 두 손의 기도와 축복 간극이 정면 시선에 들어오는 인체공학 치수</p>
+            <h3>스탠드 이미지 한 컷 (최종 확정 1.2m 전신 설치 컷)</h3>
+            <p>세로결 다크 월넛 원목 캐비닛 좌대(75cm) + 전례용 홍색 벨벳 하부 둘레 황금빛 상향 간접조명 + 무반사 유리함(45cm) 일체형 설치 뷰</p>
           </div>
         </div>
       </div>
       <div class="plaque-box">
         <h2>전시 캡션 명패 문안 — 〈부서진 두 손, 멈추지 않은 축복 (Broken Hands, Unbroken Blessing)〉</h2>
-        <p><strong>규격 및 재료:</strong> 2025년 전투기 오폭 사고 현장에서 수습된 예수 그리스도상·성모 마리아상의 실제 손 잔해 2점(무복원 원형 보존), 가시 면류관과 장미 화관, 전례용 홍색 벨벳, 다크 월넛 원목 좌대와 무반사 조명 유리함 (50 × 42 × 120 cm)</p>
-        <p>훈련 중이던 전투기의 오폭 충격으로 성상의 몸체가 부서진 현장에서 기적처럼 수습된 두 점의 성물 파편입니다. 인위적 복원을 거치지 않은 거친 파단면 그대로, 수난의 가시 면류관을 통과해 내려오는 예수 그리스도의 상처 입은 왼손과 장미 화관 위에서 하늘을 향해 겸손히 모아진 성모 마리아의 합장한 손이 마주합니다. 포탄이 남긴 상흔조차 서로를 향한 기도와 축복의 손길로 바꾸어 내는 평화의 증언입니다.</p>
+        <p><strong>규격 및 재료:</strong> 2025년 전투기 오폭 사고 현장에서 수습된 예수 그리스도상·성모 마리아상의 실제 손 잔해 2점(무복원 원형 보존), 가시 면류관과 장미 화관, 전례용 홍색 벨벳, 다크 월넛 원목 좌대와 하부 간접조명 무반사 유리함 (50 × 42 × 120 cm)</p>
+        <p>훈련 중이던 전투기의 오폭 충격으로 성상의 몸체가 부서진 현장에서 기적처럼 수습된 두 점의 성물 파편입니다. 인위적 복원을 거치지 않은 거친 파단면 그대로, 수난의 가시 면류관 위에서 아래로 축복을 건네는 예수 그리스도의 상처 입은 왼손과 장미 화관 품에 기대어 하늘을 향해 겸손히 모아진 성모 마리아의 합장한 손이 마주합니다. 포탄이 할퀴고 간 상흔조차 서로를 향한 기도와 축복의 손길로 바꾸어 내는 평화의 증언입니다.</p>
       </div>
     </section>
   </div>
@@ -1059,14 +1045,14 @@
   const meshGlass = buildGlassBoxMesh();
   const meshWire = buildWireMesh();
 
-  // Default State = Exact d0567466.jpg Composition!
+  // Default State = Final Confirmed Composition (Midpoint Crown under Hand + Subtle 16° Oval Tilt)!
   const state = {
     yaw: 0.04, pitch: 0.06, dist: 0.88, target: [0.0, 1.00, 0.0],
     wristRoll: -50, leftPitch: -35, leftHeight: 1.05, leftX: -0.075, leftZ: 0.01,
-    prayAngle: 50, prayLift: 0.005, prayX: 0.095, prayYaw: 12,
-    showThorn: true, showStemRose: true, thornH: 0.185, thornTilt: 82, thornX: -0.040, thornYaw: 62, thornScale: 1.12,
-    showRose: true, roseH: 0.010, roseTilt: 10, roseX: 0.095, roseScale: 1.08,
-    redH: 0.075, uplight: 1.30, showGlass: true
+    prayAngle: 50, prayLift: 0.005, prayX: 0.085, prayYaw: 12,
+    showThorn: true, showStemRose: false, thornH: 0.155, thornTilt: 16, thornX: -0.075, thornYaw: 90, thornScale: 0.88,
+    showRose: true, roseH: 0.015, roseTilt: 8, roseX: 0.085, roseScale: 0.96,
+    redH: 0.075, uplight: 1.35, showGlass: true
   };
 
   // Mouse & Galaxy S23 Touch Orbit / Pinch Zoom
@@ -1159,27 +1145,27 @@
   const layoutPresets = {
     portal: {
       slWristRoll: -50, slLeftPitch: -35, slLeftHeight: 105, slLeftX: -7.5, slLeftZ: 1.0,
+      slPrayAngle: 50, slPrayLift: 0.5, slPrayX: 8.5, slPrayYaw: 12,
+      slThornH: 15.5, slThornTilt: 16, slThornX: -7.5, slThornYaw: 90, slThornScale: 88,
+      slRoseH: 1.5, slRoseTilt: 8, slRoseX: 8.5, slRoseScale: 96, slRedH: 7.5
+    },
+    palmDownSplit: {
+      slWristRoll: -50, slLeftPitch: -35, slLeftHeight: 105, slLeftX: -7.5, slLeftZ: 1.0,
+      slPrayAngle: 50, slPrayLift: 0.5, slPrayX: 8.5, slPrayYaw: 12,
+      slThornH: 0.5, slThornTilt: 0, slThornX: -9.0, slThornYaw: 0, slThornScale: 92,
+      slRoseH: 1.5, slRoseTilt: 8, slRoseX: 8.5, slRoseScale: 96, slRedH: 7.5
+    },
+    nested: {
+      slWristRoll: -50, slLeftPitch: -35, slLeftHeight: 105, slLeftX: -7.5, slLeftZ: 1.0,
       slPrayAngle: 50, slPrayLift: 0.5, slPrayX: 9.5, slPrayYaw: 12,
       slThornH: 18.5, slThornTilt: 82, slThornX: -4.0, slThornYaw: 62, slThornScale: 112,
       slRoseH: 1.0, slRoseTilt: 10, slRoseX: 9.5, slRoseScale: 108, slRedH: 7.5
-    },
-    palmDownSplit: {
-      slWristRoll: -8, slLeftPitch: -26, slLeftHeight: 112, slLeftX: -8.0, slLeftZ: 0.5,
-      slPrayAngle: 52, slPrayLift: 0.5, slPrayX: 9.5, slPrayYaw: 12,
-      slThornH: 0.5, slThornTilt: 0, slThornX: -9.5, slThornYaw: 0, slThornScale: 100,
-      slRoseH: 0.5, slRoseTilt: 10, slRoseX: 9.5, slRoseScale: 105, slRedH: 7.5
-    },
-    nested: {
-      slWristRoll: -32, slLeftPitch: -32, slLeftHeight: 112, slLeftX: -7.5, slLeftZ: 0.5,
-      slPrayAngle: 54, slPrayLift: 1.5, slPrayX: 8.5, slPrayYaw: 12,
-      slThornH: 1.0, slThornTilt: -18, slThornX: 7.5, slThornYaw: 15, slThornScale: 112,
-      slRoseH: 4.5, slRoseTilt: 22, slRoseX: 8.5, slRoseScale: 94, slRedH: 7.5
     }
   };
   document.querySelectorAll('[data-preset]').forEach(btn => {
     btn.addEventListener('click', () => {
       const k = btn.dataset.preset;
-      applyPreset(layoutPresets[k], k === 'portal');
+      applyPreset(layoutPresets[k], k === 'nested');
     });
   });
 
@@ -1194,7 +1180,7 @@
     btn.addEventListener('click', () => { const p = camPresets[btn.dataset.cam]; state.yaw=p.yaw; state.pitch=p.pitch; state.dist=p.dist; state.target=[...p.target]; });
   });
   document.getElementById('btnReset').addEventListener('click', () => {
-    applyPreset(layoutPresets.portal, true);
+    applyPreset(layoutPresets.portal, false);
     Object.assign(state, { ...camPresets.closeup, target: [...camPresets.closeup.target] });
   });
 
