@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>파손 성물 세례·축복 디오라마 — 3D 모형 스튜디오 & 전시 시안</title>
+  <style>
+    :root {
+      --bg: #0d0c0b;
+      --card: #161412;
+      --card-alt: #1e1b18;
+      --border: #2c2723;
+      --text: #f2ede4;
+      --muted: #a39a8e;
+      --accent: #c99a49;
+      --accent-fg: #120f0a;
+      --crimson: #8b1a24;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Malgun Gothic", sans-serif;
+      line-height: 1.5;
+      padding: 16px;
+      min-height: 100vh;
+    }
+    .container { max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+    .header {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .title-wrap h1 { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
+    .title-wrap p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tab-btn {
+      padding: 8px 14px;
+      border-radius: 9px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--card-alt);
+      color: var(--muted);
+      transition: all 0.15s ease;
+    }
+    .tab-btn.active {
+      background: var(--accent);
+      color: var(--accent-fg);
+      border-color: var(--accent);
+    }
+    .grid-main {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 14px;
+    }
+    @media (max-width: 920px) {
+      .grid-main { grid-template-columns: 1fr; }
+    }
+    .viewport-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+    }
+    #glCanvas {
+      width: 100%;
+      height: 520px;
+      display: block;
+      cursor: grab;
+      touch-action: none;
+    }
+    @media (max-width: 640px) {
+      #glCanvas { height: 390px; }
+    }
+    #glCanvas:active { cursor: grabbing; }
+    .cam-bar {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      pointer-events: none;
+    }
+    .cam-btn {
+      pointer-events: auto;
+      padding: 6px 10px;
+      border-radius: 7px;
+      font-size: 11.5px;
+      background: rgba(22, 20, 18, 0.86);
+      backdrop-filter: blur(6px);
+      border: 1px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+    }
+    .cam-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .status-pill {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      padding: 6px 11px;
+      border-radius: 7px;
+      font-size: 11.5px;
+      background: rgba(15, 13, 12, 0.84);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      pointer-events: none;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 12.5px;
+    }
+    .sec-title {
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 12.5px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .ctrl-group { display: flex; flex-direction: column; gap: 4px; }
+    .ctrl-label { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; }
+    .ctrl-val { color: var(--text); font-family: ui-monospace, monospace; }
+    input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; }
+    .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-top: 6px; }
+    .btn {
+      padding: 9px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      text-align: center;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+    .btn-sec { background: var(--card-alt); color: var(--text); }
+    .hidden { display: none !important; }
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
+    .img-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .img-card img { width: 100%; display: block; aspect-ratio: 16/9; object-fit: cover; }
+    .img-cap { padding: 12px 14px; }
+    .img-cap h3 { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .img-cap p { font-size: 12px; color: var(--muted); }
+    .plaque-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      margin-top: 4px;
+    }
+    .plaque-box h2 { font-size: 15px; color: var(--accent); margin-bottom: 8px; }
+    .plaque-box p { font-size: 13px; color: var(--text); line-height: 1.7; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="title-wrap">
+        <h1>전투기 오폭 파손 성물 — 세례·축복 디오라마 3D 모형 & 전시 시안</h1>
+        <p>마우스 드래그 또는 스마트폰 손가락 터치로 360° 회전 · 핀치 줌 · 블렌더(.OBJ) 실시간 추출 지원</p>
+      </div>
+      <div class="tabs">
+        <button id="tabBtn3d" class="tab-btn active">실시간 3D 모형 스튜디오</button>
+        <button id="tabBtnRenders" class="tab-btn">스튜디오 렌더링 시안 & 전시 설명문</button>
+      </div>
+    </header>
+
+    <!-- TAB 1: Interactive WebGL2 3D Modeler -->
+    <section id="sec3d" class="grid-main">
+      <div class="viewport-card">
+        <canvas id="glCanvas" width="960" height="620"></canvas>
+        <div class="cam-bar">
+          <button data-cam="closeup" class="cam-btn">정면 1.1m 눈높이</button>
+          <button data-cam="full" class="cam-btn">전신 1.2m 원목스탠드</button>
+          <button data-cam="under" class="cam-btn">하부 앙각 (손바닥 확인)</button>
+          <button data-cam="side" class="cam-btn">측면 실루엣</button>
+          <button data-cam="quarter" class="cam-btn">3/4 입체 뷰</button>
+        </div>
+        <div id="statusBadge" class="status-pill">
+          좌상단 예수님 왼손: 손바닥 바닥 방향(0°) · 우하단 성모님 합장손: 52° 상향 · 총높이 1,200mm
+        </div>
+      </div>
+
+      <aside class="panel">
+        <div class="sec-title">1. 예수님 파손 왼손 유물 (좌상단 세례·축복)</div>
+        <div class="ctrl-group">
+          <div class="ctrl-label"><span>손목 회전 (손바닥 바닥 방향)</span><span id="valWristRoll" class="ctrl-val">0° (정하향)</span></div>
+          <input id="slWristRoll" type="range" min="-75" max="75" value="0" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label"><span>세례 하향 기울기 (↘)</span><span id="valLeftPitch" class="ctrl-val">-28°</span></div>
+          <input id="slLeftPitch" type="range" min="-55" max="-5" value="-28" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label"><span>허공 현수 높이</span><span id="valLeftHeight" class="ctrl-val">114 cm</span></div>
+          <input id="slLeftHeight" type="range" min="100" max="124" value="114" />
+        </div>
+
+        <div class="sec-title">2. 성모님 파손 합장 손 유물 (우하단 기도)</div>
+        <div class="ctrl-group">
+          <div class="ctrl-label"><span>손끝 세움 각도 (↖)</span><span id="valPrayAngle" class="ctrl-val">52°</span></div>
+          <input id="slPrayAngle" type="range" min="25" max="75" value="52" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label"><span>좌우 간격 조절</span><span id="valSpread" class="ctrl-val">100%</span></div>
+          <input id="slSpread" type="range" min="60" max="140" value="100" />
+        </div>
+
+        <div class="sec-title">3. 디오라마 단 · 유리함 · 조명</div>
+        <div class="ctrl-group">
+          <div class="ctrl-label"><span>내부 붉은 벨벳 단 높이</span><span id="valRedH" class="ctrl-val">7.5 cm</span></div>
+          <input id="slRedH" type="range" min="4" max="18" step="0.5" value="7.5" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label"><span>하부 상향 조명 밝기</span><span id="valUplight" class="ctrl-val">120%</span></div>
+          <input id="slUplight" type="range" min="20" max="200" value="120" />
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:2px;">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--muted);font-size:12px;">
+            <input id="chkGlass" type="checkbox" checked style="accent-color:var(--accent);" />
+            투명 유리함 & 현수 실 표시
+          </label>
+          <button id="btnReset" style="background:none;border:none;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:12px;">초기화</button>
+        </div>
+
+        <div class="action-row">
+          <button id="btnExportObj" class="btn btn-primary">.OBJ 3D 다운로드</button>
+          <button id="btnCapturePng" class="btn btn-sec">3D 화면 PNG 저장</button>
+        </div>
+        <a href="./build_blender_relic_diorama.py" download class="btn btn-sec" style="display:block;width:100%;">
+          Blender 4.x 자동 생성 스크립트 (.py) 다운로드
+        </a>
+      </aside>
+    </section>
+
+    <!-- TAB 2: Photorealistic Studio Renders & Plaque -->
+    <section id="secRenders" class="hidden">
+      <div class="gallery-grid">
+        <div class="img-card">
+          <img src="./studio-master-b-closeup.jpg" alt="마스터 시안 B 근접 뷰" />
+          <div class="img-cap">
+            <h3>시안 B (근접 뷰) — 측면 손 실루엣 손바닥 하향(↘) + 파손 합장 손 유물(↖)</h3>
+            <p>손바닥을 바닥으로 향한 자연스러운 측면 성상 손 실루엣이 우측 하단 실제 파손 합장 손 유물 위를 세례하듯 덮어주는 구도</p>
+          </div>
+        </div>
+        <div class="img-card">
+          <img src="./studio-master-a-closeup.jpg" alt="마스터 시안 A 근접 뷰" />
+          <div class="img-cap">
+            <h3>시안 A (근접 뷰) — 외측 관절 파단면 반영 손바닥 하향(↘) + 파손 합장 손 유물(↖)</h3>
+            <p>외측 손가락 파손 단면과 손등 성흔을 함께 노출하면서 손바닥이 아래를 향하도록 현수한 세례·축복 구도</p>
+          </div>
+        </div>
+        <div class="img-card">
+          <img src="./studio-master-b-full.jpg" alt="마스터 시안 B 1.2m 원목 스탠드 전신 뷰" />
+          <div class="img-cap">
+            <h3>시안 B 전신 — 1.2m 다크 월넛 원목 함 스탠드 (손 높이 1.1m 비례)</h3>
+            <p>하부 원목 함(75cm) + 상부 저철분 무반사 유리함(45cm) + 절반 이하로 낮춘 붉은 벨벳 단(7.5cm) 및 하부 상향 조명</p>
+          </div>
+        </div>
+        <div class="img-card">
+          <img src="./studio-master-a-full.jpg" alt="마스터 시안 A 1.2m 원목 스탠드 전신 뷰" />
+          <div class="img-cap">
+            <h3>시안 A 전신 — 1.2m 원목 함 스탠드 전체 외관 비례</h3>
+            <p>성인이 서서 살짝 내려다볼 때 두 손의 축복·기도 간극이 정면 시선에 들어오는 1.1m 눈높이 설계</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="plaque-box">
+        <h2>전시 캡션 명패 문안 — 〈부서진 두 손, 멈추지 않은 축복 (Broken Hands, Unbroken Blessing)〉</h2>
+        <p><strong>규격 및 재료:</strong> 2025년 전투기 오폭 사고 현장에서 수습된 예수 그리스도상·성모 마리아상의 실제 손 잔해 2점(무복원 원형 보존), 가시 면류관과 장미, 전례용 홍색 벨벳, 다크 월넛 원목 좌대와 무반사 조명 유리함 (50 × 42 × 120 cm)</p>
+        <p>훈련 중이던 전투기의 오폭 충격으로 성상의 몸체가 부서진 현장에서 기적처럼 수습된 두 점의 성물 파편입니다. 인위적 복원을 거치지 않은 파단면 그대로, 우측 장미 위에서 하늘을 향해 겸손히 모아진 성모 마리아의 합장한 손과 좌측 상단에서 손바닥을 아래로 향한 채 세례와 강복을 내리듯 덮어주는 예수 그리스도의 상처 입은 왼손이 마주합니다. 포탄이 할퀴고 간 상흔조차 서로를 향한 기도와 축복의 손길로 바꾸어 내는 평화의 증언입니다.</p>
+      </div>
+    </section>
+  </div>
+
+<script>
+(() => {
+  // Tab switching
+  const tabBtn3d = document.getElementById('tabBtn3d');
+  const tabBtnRenders = document.getElementById('tabBtnRenders');
+  const sec3d = document.getElementById('sec3d');
+  const secRenders = document.getElementById('secRenders');
+  tabBtn3d.addEventListener('click', () => {
+    tabBtn3d.classList.add('active'); tabBtnRenders.classList.remove('active');
+    sec3d.classList.remove('hidden'); secRenders.classList.add('hidden');
+  });
+  tabBtnRenders.addEventListener('click', () => {
+    tabBtnRenders.classList.add('active'); tabBtn3d.classList.remove('active');
+    secRenders.classList.remove('hidden'); sec3d.classList.add('hidden');
+  });
+
+  const canvas = document.getElementById('glCanvas');
+  const gl = canvas.getContext('webgl2', { antialias: true, preserveDrawingBuffer: true });
+  if (!gl) return;
+
+  const vsSrc = `#version 300 es
+  layout(location=0) in vec3 aPos;
+  layout(location=1) in vec3 aNorm;
+  layout(location=2) in vec4 aCol;
+  uniform mat4 uProj, uView, uModel;
+  out vec3 vWorldPos;
+  out vec3 vNorm;
+  out vec4 vCol;
+  void main() {
+    vec4 wp = uModel * vec4(aPos, 1.0);
+    vWorldPos = wp.xyz;
+    vNorm = mat3(transpose(inverse(uModel))) * aNorm;
+    vCol = aCol;
+    gl_Position = uProj * uView * wp;
+  }`;
+
+  const fsSrc = `#version 300 es
+  precision highp float;
+  in vec3 vWorldPos;
+  in vec3 vNorm;
+  in vec4 vCol;
+  uniform vec3 uCamPos;
+  uniform float uUplight;
+  uniform int uMatType;
+  out vec4 fragColor;
+
+  void main() {
+    if (uMatType == 5) {
+      fragColor = vec4(vCol.rgb * (0.85 + 0.45 * uUplight), vCol.a);
+      return;
+    }
+    vec3 N = normalize(vNorm);
+    vec3 V = normalize(uCamPos - vWorldPos);
+
+    if (uMatType == 4) {
+      float fres = pow(1.0 - max(0.0, abs(dot(N, V))), 3.2);
+      vec3 gCol = mix(vec3(0.76, 0.88, 0.86), vec3(0.96, 0.98, 0.97), fres);
+      float alpha = clamp(vCol.a + fres * 0.26, 0.04, 0.42);
+      fragColor = vec4(gCol, alpha);
+      return;
+    }
+
+    vec3 lTopPos = vec3(-0.08, 1.55, 0.28);
+    vec3 Ltop = normalize(lTopPos - vWorldPos);
+    float dTop = max(0.0, dot(N, Ltop));
+    float wrapTop = max(0.0, (dot(N, Ltop) + 0.35) / 1.35);
+
+    vec3 lBotPos = vec3(0.0, 0.78, 0.08);
+    vec3 Lbot = normalize(lBotPos - vWorldPos);
+    float distBot = length(lBotPos - vWorldPos);
+    float attenBot = 1.0 / (1.0 + 3.2 * distBot * distBot);
+    float dBot = max(0.0, dot(N, Lbot)) * attenBot * uUplight;
+
+    vec3 base = vCol.rgb;
+    if (uMatType == 2) {
+      float grain = sin(vWorldPos.x * 85.0 + sin(vWorldPos.y * 16.0) * 2.5) * 0.5 + 0.5;
+      base *= (0.80 + 0.32 * grain);
+    } else if (uMatType == 0) {
+      float pit = fract(sin(dot(floor(vWorldPos * 380.0), vec3(12.9898, 78.233, 37.719))) * 43758.5453);
+      if (pit > 0.94) base *= 0.86;
+    }
+
+    vec3 col = base * 0.16;
+    if (uMatType == 0) {
+      col += base * vec3(1.06, 0.98, 0.88) * (0.52 * dTop + 0.34 * wrapTop);
+      col += base * vec3(1.18, 0.68, 0.52) * (1.15 * dBot);
+      vec3 H = normalize(Ltop + V);
+      col += vec3(0.18, 0.16, 0.14) * pow(max(0.0, dot(N, H)), 22.0);
+    } else if (uMatType == 1) {
+      float rim = pow(1.0 - max(0.0, dot(N, V)), 2.2);
+      col += base * (0.65 * dTop + 0.55 * uUplight * 0.4) + base * 0.42 * rim;
+    } else {
+      col += base * vec3(1.04, 0.97, 0.89) * (0.72 * dTop + 0.45 * dBot);
+      vec3 H = normalize(Ltop + V);
+      col += vec3(0.09) * pow(max(0.0, dot(N, H)), 16.0);
+    }
+
+    col = col / (col + vec3(0.85));
+    col = pow(col, vec3(1.0 / 2.15));
+    fragColor = vec4(col, vCol.a);
+  }`;
+
+  function compile(type, src) {
+    const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, compile(gl.VERTEX_SHADER, vsSrc));
+  gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, fsSrc));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+
+  const uProj = gl.getUniformLocation(prog, 'uProj');
+  const uView = gl.getUniformLocation(prog, 'uView');
+  const uModel = gl.getUniformLocation(prog, 'uModel');
+  const uCamPos = gl.getUniformLocation(prog, 'uCamPos');
+  const uUplight = gl.getUniformLocation(prog, 'uUplight');
+  const uMatType = gl.getUniformLocation(prog, 'uMatType');
+
+  function mat4Identity() { return new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]); }
+  function mat4Mul(a, b) {
+    const o = new Float32Array(16);
+    for (let c=0;c<4;c++) for (let r=0;r<4;r++)
+      o[c*4+r] = a[0*4+r]*b[c*4+0] + a[1*4+r]*b[c*4+1] + a[2*4+r]*b[c*4+2] + a[3*4+r]*b[c*4+3];
+    return o;
+  }
+  function mat4Translate(x,y,z) { const m=mat4Identity(); m[12]=x; m[13]=y; m[14]=z; return m; }
+  function mat4Scale(x,y,z) { const m=mat4Identity(); m[0]=x; m[5]=y; m[10]=z; return m; }
+  function mat4RotX(a) { const c=Math.cos(a),s=Math.sin(a),m=mat4Identity(); m[5]=c;m[6]=s;m[9]=-s;m[10]=c; return m; }
+  function mat4RotY(a) { const c=Math.cos(a),s=Math.sin(a),m=mat4Identity(); m[0]=c;m[2]=-s;m[8]=s;m[10]=c; return m; }
+  function mat4RotZ(a) { const c=Math.cos(a),s=Math.sin(a),m=mat4Identity(); m[0]=c;m[1]=s;m[4]=-s;m[5]=c; return m; }
+  function mat4Persp(fov, asp, near, far) {
+    const f = 1.0 / Math.tan(fov/2), nf = 1/(near-far), m = new Float32Array(16);
+    m[0]=f/asp; m[5]=f; m[10]=(far+near)*nf; m[11]=-1; m[14]=2*far*near*nf; return m;
+  }
+  function mat4LookAt(eye, ctr, up) {
+    let zx=eye[0]-ctr[0], zy=eye[1]-ctr[1], zz=eye[2]-ctr[2];
+    let zl=Math.hypot(zx,zy,zz)||1; zx/=zl; zy/=zl; zz/=zl;
+    let xx=up[1]*zz-up[2]*zy, xy=up[2]*zx-up[0]*zz, xz=up[0]*zy-up[1]*zx;
+    let xl=Math.hypot(xx,xy,xz)||1; xx/=xl; xy/=xl; xz/=xl;
+    let yx=zy*xz-zz*xy, yy=zz*xx-zx*xz, yz=zx*xy-zy*xx;
+    const m = mat4Identity();
+    m[0]=xx; m[4]=xy; m[8]=xz; m[12]=-(xx*eye[0]+xy*eye[1]+xz*eye[2]);
+    m[1]=yx; m[5]=yy; m[9]=yz; m[13]=-(yx*eye[0]+yy*eye[1]+yz*eye[2]);
+    m[2]=zx; m[6]=zy; m[10]=zz; m[14]=-(zx*eye[0]+zy*eye[1]+zz*eye[2]);
+    return m;
+  }
+  function transformPt(m, p) {
+    return [m[0]*p[0]+m[4]*p[1]+m[8]*p[2]+m[12], m[1]*p[0]+m[5]*p[1]+m[9]*p[2]+m[13], m[2]*p[0]+m[6]*p[1]+m[10]*p[2]+m[14]];
+  }
+  function transformNorm(m, n) {
+    const x=m[0]*n[0]+m[4]*n[1]+m[8]*n[2], y=m[1]*n[0]+m[5]*n[1]+m[9]*n[2], z=m[2]*n[0]+m[6]*n[1]+m[10]*n[2];
+    const l=Math.hypot(x,y,z)||1; return [x/l,y/l,z/l];
+  }
+
+  class MeshBuilder {
+    constructor() { this.pos=[]; this.norm=[]; this.col=[]; this.idx=[]; }
+    addVert(p, n, c) {
+      const i = this.pos.length / 3;
+      this.pos.push(p[0],p[1],p[2]); this.norm.push(n[0],n[1],n[2]); this.col.push(c[0],c[1],c[2],c[3]??1.0);
+      return i;
+    }
+    addTri(a,b,c) { this.idx.push(a,b,c); }
+    addQuad(a,b,c,d) { this.idx.push(a,b,c, a,c,d); }
+    addBox(cx,cy,cz, sx,sy,sz, color) {
+      const hx=sx/2, hy=sy/2, hz=sz/2;
+      const faces = [
+        [[0,0,1], [[-hx,-hy,hz],[hx,-hy,hz],[hx,hy,hz],[-hx,hy,hz]]],
+        [[0,0,-1],[[hx,-hy,-hz],[-hx,-hy,-hz],[-hx,hy,-hz],[hx,hy,-hz]]],
+        [[0,1,0], [[-hx,hy,hz],[hx,hy,hz],[hx,hy,-hz],[-hx,hy,-hz]]],
+        [[0,-1,0],[[-hx,-hy,-hz],[hx,-hy,-hz],[hx,-hy,hz],[-hx,-hy,hz]]],
+        [[1,0,0], [[hx,-hy,hz],[hx,-hy,-hz],[hx,hy,-hz],[hx,hy,hz]]],
+        [[-1,0,0],[[-hx,-hy,-hz],[-hx,-hy,hz],[-hx,hy,hz],[-hx,hy,-hz]]]
+      ];
+      for (const [n, pts] of faces) {
+        const ids = pts.map(p => this.addVert([p[0]+cx,p[1]+cy,p[2]+cz], n, color));
+        this.addQuad(ids[0],ids[1],ids[2],ids[3]);
+      }
+    }
+    addLoftedSurface(samplesU, samplesV, evalRingPt, capStartChalk, capEndChalk, baseCol, chalkCol) {
+      const grid = [];
+      for (let iu=0; iu<=samplesU; iu++) {
+        const u = iu / samplesU, row = [];
+        for (let iv=0; iv<=samplesV; iv++) row.push(evalRingPt(u, (iv / samplesV) * Math.PI * 2.0));
+        grid.push(row);
+      }
+      const idGrid = [];
+      for (let iu=0; iu<=samplesU; iu++) {
+        const idRow = [];
+        for (let iv=0; iv<=samplesV; iv++) {
+          const p = grid[iu][iv].p;
+          const pu1 = grid[Math.min(samplesU, iu+1)][iv].p, pu0 = grid[Math.max(0, iu-1)][iv].p;
+          const pv1 = grid[iu][(iv+1)%(samplesV+1)].p, pv0 = grid[iu][(iv+samplesV)%(samplesV+1)].p;
+          const du = [pu1[0]-pu0[0], pu1[1]-pu0[1], pu1[2]-pu0[2]];
+          const dv = [pv1[0]-pv0[0], pv1[1]-pv0[1], pv1[2]-pv0[2]];
+          let nx = dv[1]*du[2]-dv[2]*du[1], ny = dv[2]*du[0]-dv[0]*du[2], nz = dv[0]*du[1]-dv[1]*du[0];
+          let nl = Math.hypot(nx,ny,nz)||1;
+          idRow.push(this.addVert(p, [nx/nl, ny/nl, nz/nl], grid[iu][iv].c || baseCol));
+        }
+        idGrid.push(idRow);
+      }
+      for (let iu=0; iu<samplesU; iu++)
+        for (let iv=0; iv<samplesV; iv++)
+          this.addQuad(idGrid[iu][iv], idGrid[iu][iv+1], idGrid[iu+1][iv+1], idGrid[iu+1][iv]);
+
+      if (capStartChalk) {
+        let cx=0,cy=0,cz=0;
+        for (let iv=0; iv<samplesV; iv++) { const p=grid[0][iv].p; cx+=p[0]; cy+=p[1]; cz+=p[2]; }
+        const cId = this.addVert([cx/samplesV-0.003, cy/samplesV, cz/samplesV], [-1,0,0], chalkCol);
+        for (let iv=0; iv<samplesV; iv++) {
+          const i0 = this.addVert(grid[0][iv].p, [-0.95, 0.2*Math.sin(iv*3), 0.2*Math.cos(iv*2)], chalkCol);
+          const i1 = this.addVert(grid[0][iv+1].p, [-0.95, 0.2*Math.sin(iv*3+1), 0.2*Math.cos(iv*2+1)], chalkCol);
+          this.addTri(cId, i1, i0);
+        }
+      }
+      if (capEndChalk) {
+        let cx=0,cy=0,cz=0;
+        for (let iv=0; iv<samplesV; iv++) { const p=grid[samplesU][iv].p; cx+=p[0]; cy+=p[1]; cz+=p[2]; }
+        const cId = this.addVert([cx/samplesV+0.002, cy/samplesV, cz/samplesV], [1,0,0], chalkCol);
+        for (let iv=0; iv<samplesV; iv++) {
+          const i0 = this.addVert(grid[samplesU][iv].p, [0.95, 0.2*Math.cos(iv*3), 0.2*Math.sin(iv*3)], chalkCol);
+          const i1 = this.addVert(grid[samplesU][iv+1].p, [0.95, 0.2*Math.cos(iv*3+1), 0.2*Math.sin(iv*3+1)], chalkCol);
+          this.addTri(cId, i0, i1);
+        }
+      }
+    }
+    upload() {
+      const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+      const mk = (loc, arr, sz) => {
+        const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(arr), gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, sz, gl.FLOAT, false, 0, 0);
+      };
+      mk(0, this.pos, 3); mk(1, this.norm, 3); mk(2, this.col, 4);
+      const ib = gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ib);
+      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(this.idx), gl.STATIC_DRAW);
+      return { vao, count: this.idx.length, raw: this };
+    }
+  }
+
+  const PLASTER = [0.89, 0.85, 0.78, 1.0], CHALK = [0.96, 0.95, 0.92, 1.0];
+
+  function buildLeftHandRelicMesh() {
+    const mb = new MeshBuilder();
+    mb.addLoftedSurface(28, 32, (u, th) => {
+      let x = -0.068 + u * 0.102;
+      if (u < 0.08) x += 0.005 * Math.sin(th * 5.0 + 1.2) * (1.0 - u/0.08);
+      if (u > 0.90) x += 0.006 * Math.cos(th * 4.0) * ((u - 0.90)/0.10);
+      const wz = 0.033 + 0.017 * Math.sin(u * Math.PI * 0.72);
+      const hy = 0.021 - 0.006 * u;
+      const spineY = 0.005 * Math.sin(u * Math.PI);
+      let z = Math.cos(th) * wz, y = Math.sin(th) * hy + spineY;
+      if (Math.sin(th) < -0.1 && u > 0.15 && u < 0.90)
+        y += 0.0075 * Math.sin(((u - 0.15)/0.75) * Math.PI) * Math.pow(-Math.sin(th), 1.4);
+      let c = PLASTER;
+      if (Math.sin(th) > 0.7 && Math.abs(Math.cos(th)) < 0.18 && u > 0.35 && u < 0.72) {
+        y -= 0.0028 * Math.sin(((u - 0.35)/0.37)*Math.PI);
+        c = [0.76, 0.72, 0.65, 1.0];
+      }
+      if (u < 0.04 || (u > 0.95 && Math.cos(th) > 0.15)) c = CHALK;
+      return { p: [x, y, z], c };
+    }, true, true, PLASTER, CHALK);
+
+    mb.addLoftedSurface(10, 18, (u, th) => {
+      const r = 0.014 * (1.0 - 0.22 * u), jagg = (u > 0.85) ? 0.003 * Math.sin(th * 4.0) : 0.0;
+      return { p: [-0.012 + u*0.032 + jagg, -0.005 - u*0.012 + Math.sin(th)*r*0.88, -0.032 - u*0.022 + Math.cos(th)*r], c: u > 0.86 ? CHALK : PLASTER };
+    }, false, true, PLASTER, CHALK);
+
+    for (let k=0; k<2; k++) {
+      const zOff = k === 0 ? 0.018 : 0.034, len = k === 0 ? 0.022 : 0.014;
+      mb.addLoftedSurface(8, 16, (u, th) => {
+        const r = (k === 0 ? 0.0085 : 0.0075) * (1.0 - 0.12*u), jagg = u > 0.8 ? 0.0035 * Math.cos(th * 3.0 + k) : 0.0;
+        return { p: [0.028 + u*len + jagg, -u*0.005 + Math.sin(th)*r*0.9, zOff + Math.cos(th)*r], c: u > 0.82 ? CHALK : PLASTER };
+      }, false, true, PLASTER, CHALK);
+    }
+
+    for (const fg of [{ z0: -0.017, len: 0.072, r0: 0.0088 }, { z0: 0.001, len: 0.078, r0: 0.0092 }]) {
+      mb.addLoftedSurface(18, 18, (u, th) => {
+        const r = fg.r0 * (1.0 - 0.24 * u), jagg = u > 0.90 ? 0.003 * Math.sin(th * 4.0) : 0.0;
+        return { p: [0.028 + u*fg.len + jagg, -0.018 * Math.pow(u, 1.45) + Math.sin(th)*r*0.92, fg.z0 + Math.cos(th)*r], c: u > 0.91 ? CHALK : PLASTER };
+      }, false, true, PLASTER, CHALK);
+    }
+    return mb.upload();
+  }
+
+  function buildPrayingHandsRelicMesh() {
+    const mb = new MeshBuilder();
+    for (const side of [-1, 1]) {
+      mb.addLoftedSurface(26, 24, (u, th) => {
+        let y = -0.085 + u * 0.185;
+        if (u < 0.07) y += 0.006 * Math.sin(th * 4.0 + side) * (1.0 - u/0.07);
+        if (u > 0.93) y -= 0.004 * Math.cos(th * 3.0) * ((u - 0.93)/0.07);
+        const wx = (u < 0.25) ? (0.024 + 0.012 * (u/0.25)) : (0.036 * (1.0 - 0.58 * Math.pow((u - 0.25)/0.75, 1.25)));
+        const tz = (u < 0.22) ? 0.016 : (0.015 * (1.0 - 0.48 * u));
+        const gapZ = (u < 0.25) ? 0.014 * Math.pow(1.0 - u/0.25, 1.5) : 0.001;
+        let x = Math.cos(th) * wx, rawZ = Math.sin(th) * tz;
+        if (side * rawZ < 0) rawZ *= 0.22;
+        let z = side * (gapZ + tz * 0.42) + rawZ;
+        if (u > 0.48 && side * rawZ > 0) z += side * 0.0016 * Math.sin(x * 210.0);
+        return { p: [x, y, z], c: (u < 0.04 || u > 0.95) ? CHALK : PLASTER };
+      }, true, true, PLASTER, CHALK);
+    }
+    for (const side of [-1, 1]) {
+      mb.addLoftedSurface(16, 16, (u, th) => {
+        const r = 0.0095 * (1.0 - 0.22 * u);
+        const y = -0.032 + u * 0.068;
+        const x = 0.026 + 0.010 * Math.sin(u * Math.PI * 0.85) + Math.cos(th) * r;
+        const crossZ = side * (0.020 - u * 0.034) + (side === 1 ? 0.005 * Math.sin(u * Math.PI) : -0.002);
+        return { p: [x, y, crossZ + Math.sin(th) * r * 0.88], c: PLASTER };
+      }, false, false, PLASTER, CHALK);
+    }
+    return mb.upload();
+  }
+
+  function buildWalnutStandMesh() {
+    const mb = new MeshBuilder();
+    const W = 0.50, D = 0.42, H = 0.75, wd = [0.22, 0.13, 0.08, 1.0], wt = [0.17, 0.10, 0.06, 1.0];
+    mb.addBox(0, H/2, 0, W, H, D, wd);
+    mb.addBox(0, H - 0.018, 0, W + 0.018, 0.036, D + 0.018, wt);
+    mb.addBox(0, 0.02, 0, W - 0.02, 0.04, D - 0.02, wt);
+    mb.addBox(-W*0.42, H*0.5, D*0.502, 0.045, H*0.78, 0.012, wt);
+    mb.addBox( W*0.42, H*0.5, D*0.502, 0.045, H*0.78, 0.012, wt);
+    mb.addBox(0, H*0.85, D*0.502, W*0.88, 0.045, 0.012, wt);
+    mb.addBox(0, H*0.15, D*0.502, W*0.88, 0.045, 0.012, wt);
+    return mb.upload();
+  }
+
+  function buildVelvetMesh() { const mb = new MeshBuilder(); mb.addBox(0, 0.5, 0, 0.43, 1.0, 0.35, [0.52, 0.05, 0.08, 1.0]); return mb.upload(); }
+  function buildUplightStripMesh() {
+    const mb = new MeshBuilder(), glow = [1.0, 0.76, 0.42, 1.0];
+    mb.addBox(0, 0.753,  0.182, 0.45, 0.005, 0.008, glow);
+    mb.addBox(0, 0.753, -0.182, 0.45, 0.005, 0.008, glow);
+    mb.addBox(-0.222, 0.753, 0, 0.008, 0.005, 0.36, glow);
+    mb.addBox( 0.222, 0.753, 0, 0.008, 0.005, 0.36, glow);
+    return mb.upload();
+  }
+
+  function buildThornsAndRosesMesh() {
+    const mb = new MeshBuilder(), thornCol = [0.20, 0.14, 0.10, 1.0];
+    for (let strand=0; strand<3; strand++) {
+      const ph = strand * 2.094;
+      mb.addLoftedSurface(56, 8, (u, th) => {
+        const ang = u * Math.PI * 2.0, R = 0.078 + 0.009 * Math.sin(ang * 5.0 + ph);
+        const cy = 0.018 + 0.008 * Math.cos(ang * 5.0 + ph), rTube = 0.0038;
+        return { p: [-0.095 + (R + Math.cos(th)*rTube)*Math.cos(ang), cy + Math.sin(th)*rTube, 0.010 + (R + Math.cos(th)*rTube)*Math.sin(ang)], c: thornCol };
+      }, false, false, thornCol, thornCol);
+    }
+    for (let i=0; i<28; i++) {
+      const ang = (i / 28) * Math.PI * 2.0, bx = -0.095 + 0.080 * Math.cos(ang), bz = 0.010 + 0.080 * Math.sin(ang), by = 0.020 + 0.006 * Math.sin(i * 2.1);
+      const dirX = Math.cos(ang + 0.35 * ((i%2)?1:-1)), dirZ = Math.sin(ang + 0.35 * ((i%2)?1:-1)), dirY = (i % 3 === 0) ? 0.55 : -0.25;
+      mb.addLoftedSurface(4, 6, (u, th) => {
+        const r = 0.0022 * (1.0 - u);
+        return { p: [bx + dirX*u*0.022 + Math.cos(th)*r, by + dirY*u*0.022 + Math.sin(th)*r, bz + dirZ*u*0.022], c: thornCol };
+      }, false, false, thornCol, thornCol);
+    }
+    const roses = [
+      { x: 0.062, z: 0.038, col: [0.56, 0.07, 0.11, 1.0], sc: 1.05 },
+      { x: 0.106, z: 0.044, col: [0.86, 0.81, 0.72, 1.0], sc: 0.92 },
+      { x: 0.138, z: 0.010, col: [0.84, 0.79, 0.70, 1.0], sc: 0.95 },
+      { x: 0.082, z:-0.028, col: [0.50, 0.06, 0.09, 1.0], sc: 0.90 }
+    ];
+    for (const rs of roses) {
+      for (let p=0; p<10; p++) {
+        const a0 = p * 1.95, rad = (0.008 + p * 0.0018) * rs.sc;
+        mb.addLoftedSurface(6, 8, (u, th) => {
+          const ang = a0 + (u - 0.5) * 1.35, h = 0.022 * rs.sc * Math.sin(th * 0.5), rr = rad + 0.003 * Math.cos(th);
+          return { p: [rs.x + rr * Math.cos(ang), 0.006 + h, rs.z + rr * Math.sin(ang)], c: rs.col };
+        }, false, false, rs.col, rs.col);
+      }
+    }
+    return mb.upload();
+  }
+
+  function buildGlassBoxMesh() {
+    const mb = new MeshBuilder(), W = 0.48, D = 0.40, H = 0.45, cy = 0.75 + H/2;
+    const gEdge = [0.72, 0.88, 0.84, 0.22], gPane = [0.85, 0.93, 0.91, 0.07];
+    mb.addBox(0, cy,  D/2, W, H, 0.004, gPane); mb.addBox(0, cy, -D/2, W, H, 0.004, gPane);
+    mb.addBox(-W/2, cy, 0, 0.004, H, D, gPane); mb.addBox( W/2, cy, 0, 0.004, H, D, gPane);
+    mb.addBox(0, 0.75 + H, 0, W, 0.006, D, gEdge);
+    return mb.upload();
+  }
+  function buildWireMesh() { const mb = new MeshBuilder(); mb.addBox(0, 0.5, 0, 0.0012, 1.0, 0.0012, [0.88, 0.90, 0.92, 0.30]); return mb.upload(); }
+
+  const meshLeftHand = buildLeftHandRelicMesh(), meshPrayHands = buildPrayingHandsRelicMesh();
+  const meshStand = buildWalnutStandMesh(), meshVelvet = buildVelvetMesh(), meshUplight = buildUplightStripMesh();
+  const meshDecor = buildThornsAndRosesMesh(), meshGlass = buildGlassBoxMesh(), meshWire = buildWireMesh();
+
+  const state = {
+    yaw: 0.06, pitch: 0.07, dist: 0.92, target: [0.0, 1.01, 0.0],
+    wristRoll: 0, leftPitch: -28, leftHeight: 1.14, prayAngle: 52, spread: 1.0, redH: 0.075, uplight: 1.20, showGlass: true
+  };
+
+  // PC Mouse + Mobile Touch Orbit & Pinch Zoom!
+  let dragging = false, panMode = false, lx = 0, ly = 0, pinchDist0 = 0;
+  canvas.addEventListener('contextmenu', e => e.preventDefault());
+  canvas.addEventListener('mousedown', e => { dragging = true; panMode = (e.button === 2 || e.shiftKey); lx = e.clientX; ly = e.clientY; });
+  window.addEventListener('mouseup', () => dragging = false);
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const dx = e.clientX - lx, dy = e.clientY - ly; lx = e.clientX; ly = e.clientY;
+    if (panMode) { state.target[0] -= dx * 0.0012 * state.dist; state.target[1] += dy * 0.0012 * state.dist; }
+    else { state.yaw -= dx * 0.007; state.pitch = Math.max(-1.15, Math.min(1.25, state.pitch + dy * 0.007)); }
+  });
+  canvas.addEventListener('wheel', e => { e.preventDefault(); state.dist = Math.max(0.42, Math.min(2.6, state.dist * (1 + e.deltaY * 0.001))); }, { passive: false });
+
+  canvas.addEventListener('touchstart', e => {
+    e.preventDefault();
+    if (e.touches.length === 1) { dragging = true; lx = e.touches[0].clientX; ly = e.touches[0].clientY; }
+    else if (e.touches.length === 2) {
+      dragging = false;
+      pinchDist0 = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+    }
+  }, { passive: false });
+  canvas.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (e.touches.length === 1 && dragging) {
+      const dx = e.touches[0].clientX - lx, dy = e.touches[0].clientY - ly;
+      lx = e.touches[0].clientX; ly = e.touches[0].clientY;
+      state.yaw -= dx * 0.008; state.pitch = Math.max(-1.15, Math.min(1.25, state.pitch + dy * 0.008));
+    } else if (e.touches.length === 2 && pinchDist0 > 0) {
+      const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      state.dist = Math.max(0.42, Math.min(2.6, state.dist * (pinchDist0 / Math.max(10, d))));
+      pinchDist0 = d;
+    }
+  }, { passive: false });
+  canvas.addEventListener('touchend', () => { dragging = false; pinchDist0 = 0; });
+
+  const bindSlider = (id, key, scale, fmt) => {
+    const el = document.getElementById(id), out = document.getElementById('val' + id.slice(2));
+    el.addEventListener('input', () => {
+      state[key] = parseFloat(el.value) * scale; out.textContent = fmt(parseFloat(el.value));
+      document.getElementById('statusBadge').textContent = `좌상단 예수님 손: 손목회전 ${state.wristRoll}° (손바닥 하향) · 세례각 ${state.leftPitch}° · 우하단 합장손: ${state.prayAngle}° 상향`;
+    });
+  };
+  bindSlider('slWristRoll', 'wristRoll', 1, v => `${v}° (${Math.abs(v)<=12?'정하향':(v>0?'전방회전':'후방회전')})`);
+  bindSlider('slLeftPitch', 'leftPitch', 1, v => `${v}°`);
+  bindSlider('slLeftHeight', 'leftHeight', 0.01, v => `${v} cm`);
+  bindSlider('slPrayAngle', 'prayAngle', 1, v => `${v}°`);
+  bindSlider('slSpread', 'spread', 0.01, v => `${v}%`);
+  bindSlider('slRedH', 'redH', 0.01, v => `${v} cm`);
+  bindSlider('slUplight', 'uplight', 0.01, v => `${v}%`);
+  document.getElementById('chkGlass').addEventListener('change', e => state.showGlass = e.target.checked);
+
+  const presets = {
+    closeup: { yaw: 0.05, pitch: 0.06, dist: 0.88, target: [0.0, 1.00, 0.0] },
+    full:    { yaw: 0.04, pitch: 0.08, dist: 1.95, target: [0.0, 0.64, 0.0] },
+    under:   { yaw: 0.22, pitch:-0.42, dist: 0.72, target: [-0.02, 1.05, 0.0] },
+    side:    { yaw: 1.48, pitch: 0.05, dist: 0.95, target: [0.0, 1.00, 0.0] },
+    quarter: { yaw: 0.52, pitch: 0.22, dist: 1.05, target: [0.0, 0.98, 0.0] }
+  };
+  document.querySelectorAll('.cam-btn').forEach(btn => {
+    btn.addEventListener('click', () => { const p = presets[btn.dataset.cam]; state.yaw=p.yaw; state.pitch=p.pitch; state.dist=p.dist; state.target=[...p.target]; });
+  });
+  document.getElementById('btnReset').addEventListener('click', () => {
+    [['slWristRoll',0],['slLeftPitch',-28],['slLeftHeight',114],['slPrayAngle',52],['slSpread',100],['slRedH',7.5],['slUplight',120]].forEach(([id,v]) => {
+      const el = document.getElementById(id); el.value = v; el.dispatchEvent(new Event('input'));
+    });
+    Object.assign(state, { ...presets.closeup, target: [...presets.closeup.target] });
+  });
+
+  function getSceneTransforms() {
+    const velvetTop = 0.75 + state.redH;
+    const mStand = mat4Identity();
+    const mVelvet = mat4Mul(mat4Translate(0, 0.75, 0), mat4Scale(1, state.redH, 1));
+    const mDecor = mat4Translate(0, velvetTop, 0);
+    const mLeft = mat4Mul(
+      mat4Translate(-0.082 * state.spread, state.leftHeight, 0.005),
+      mat4Mul(mat4RotZ(state.leftPitch * Math.PI / 180.0), mat4RotX(state.wristRoll * Math.PI / 180.0))
+    );
+    const mPray = mat4Mul(
+      mat4Translate(0.098 * state.spread, velvetTop + 0.062, 0.005),
+      mat4Mul(mat4RotZ((90.0 - state.prayAngle) * Math.PI / 180.0), mat4RotY(0.18))
+    );
+    return { velvetTop, mStand, mVelvet, mDecor, mLeft, mPray };
+  }
+
+  function drawMesh(mesh, modelMat, matType) {
+    gl.uniformMatrix4fv(uModel, false, modelMat);
+    gl.uniform1i(uMatType, matType);
+    gl.bindVertexArray(mesh.vao);
+    gl.drawElements(gl.TRIANGLES, mesh.count, gl.UNSIGNED_INT, 0);
+  }
+
+  function render() {
+    if (!sec3d.classList.contains('hidden')) {
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const cw = Math.max(1, Math.floor(canvas.clientWidth * dpr));
+      const ch = Math.max(1, Math.floor(canvas.clientHeight * dpr));
+      if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.clearColor(0.065, 0.058, 0.054, 1.0);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      gl.enable(gl.DEPTH_TEST); gl.disable(gl.BLEND);
+
+      const ex = state.target[0] + state.dist * Math.cos(state.pitch) * Math.sin(state.yaw);
+      const ey = state.target[1] + state.dist * Math.sin(state.pitch);
+      const ez = state.target[2] + state.dist * Math.cos(state.pitch) * Math.cos(state.yaw);
+      gl.useProgram(prog);
+      gl.uniformMatrix4fv(uProj, false, mat4Persp(38 * Math.PI / 180, canvas.width / canvas.height, 0.05, 12.0));
+      gl.uniformMatrix4fv(uView, false, mat4LookAt([ex, ey, ez], state.target, [0, 1, 0]));
+      gl.uniform3f(uCamPos, ex, ey, ez);
+      gl.uniform1f(uUplight, state.uplight);
+
+      const tf = getSceneTransforms();
+      drawMesh(meshStand, tf.mStand, 2);
+      drawMesh(meshVelvet, tf.mVelvet, 1);
+      drawMesh(meshUplight, mat4Identity(), 5);
+      drawMesh(meshDecor, tf.mDecor, 3);
+      drawMesh(meshLeftHand, tf.mLeft, 0);
+      drawMesh(meshPrayHands, tf.mPray, 0);
+
+      if (state.showGlass) {
+        gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false);
+        for (const a of [[-0.045, 0.01, 0.0], [0.005, 0.01, -0.012], [0.025, 0.005, 0.012]]) {
+          const wp = transformPt(tf.mLeft, a), hWire = Math.max(0.01, 1.20 - wp[1]);
+          drawMesh(meshWire, mat4Mul(mat4Translate(wp[0], wp[1], wp[2]), mat4Scale(1, hWire, 1)), 4);
+        }
+        drawMesh(meshGlass, mat4Identity(), 4);
+        gl.depthMask(true); gl.disable(gl.BLEND);
+      }
+    }
+    requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
+
+  document.getElementById('btnExportObj').addEventListener('click', () => {
+    const tf = getSceneTransforms();
+    const parts = [
+      ['Walnut_Stand_120cm', meshStand, tf.mStand], ['Crimson_Velvet_Altar', meshVelvet, tf.mVelvet],
+      ['Thorns_And_Roses', meshDecor, tf.mDecor], ['Relic_Left_Hand_PalmDown', meshLeftHand, tf.mLeft],
+      ['Relic_Praying_Hands', meshPrayHands, tf.mPray], ['Glass_Vitrine', meshGlass, mat4Identity()]
+    ];
+    let lines = ['# Relic Baptismal Diorama 3D Model (Meters, Total Height: 1.20m)\n'], vOff = 1;
+    for (const [name, mesh, mat] of parts) {
+      lines.push(`o ${name}`);
+      const r = mesh.raw, nV = r.pos.length / 3;
+      for (let i=0; i<nV; i++) { const p = transformPt(mat, [r.pos[i*3], r.pos[i*3+1], r.pos[i*3+2]]); lines.push(`v ${p[0].toFixed(5)} ${p[1].toFixed(5)} ${p[2].toFixed(5)}`); }
+      for (let i=0; i<nV; i++) { const n = transformNorm(mat, [r.norm[i*3], r.norm[i*3+1], r.norm[i*3+2]]); lines.push(`vn ${n[0].toFixed(4)} ${n[1].toFixed(4)} ${n[2].toFixed(4)}`); }
+      for (let i=0; i<r.idx.length; i+=3) { const a=r.idx[i]+vOff, b=r.idx[i+1]+vOff, c=r.idx[i+2]+vOff; lines.push(`f ${a}//${a} ${b}//${b} ${c}//${c}`); }
+      vOff += nV;
+    }
+    const url = URL.createObjectURL(new Blob([lines.join('\n')], { type: 'text/plain' }));
+    const a = document.createElement('a'); a.href = url; a.download = 'relic_baptism_diorama_120cm.obj'; a.click(); URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('btnCapturePng').addEventListener('click', () => {
+    const a = document.createElement('a'); a.href = canvas.toDataURL('image/png'); a.download = 'diorama_3d_capture.png'; a.click();
+  });
+})();
+</script>
+</body>
+</html>

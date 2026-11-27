@@ -1,0 +1,26 @@
+# Security: Never commit API keys, tokens, credentials, or environment files
+.env
+.env.*
+*.env
+*api_key*
+*apikey*
+*secret*
+*token*
+*credential*
+*credentials*
+*.pem
+*.key
+*.p12
+*.pfx
+auth.json
+config.local.*
+secrets.*
+
+# Editor / Agent / OS local metadata
+.gemini/
+.vscode/
+.idea/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
