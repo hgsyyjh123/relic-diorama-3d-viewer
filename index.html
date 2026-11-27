@@ -6,36 +6,35 @@
   <title>파손 성물 세례·축복 디오라마 — 3D 모형 스튜디오 & 전시 시안</title>
   <style>
     :root {
-      --bg: #0d0c0b;
-      --card: #161412;
-      --card-alt: #1e1b18;
+      --bg: #0b0a09;
+      --card: #151311;
+      --card-alt: #1d1a17;
       --border: #2c2723;
-      --text: #f2ede4;
+      --text: #f3eee6;
       --muted: #a39a8e;
-      --accent: #c99a49;
+      --accent: #cfa04c;
       --accent-fg: #120f0a;
-      --crimson: #8b1a24;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Malgun Gothic", sans-serif;
-      line-height: 1.5;
-      padding: 16px;
+      line-height: 1.45;
+      padding: 14px;
       min-height: 100vh;
     }
-    .container { max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+    .container { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
     .header {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 14px 18px;
+      padding: 13px 18px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
     }
     .title-wrap h1 { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
     .title-wrap p { font-size: 12px; color: var(--muted); margin-top: 2px; }
@@ -51,19 +50,9 @@
       color: var(--muted);
       transition: all 0.15s ease;
     }
-    .tab-btn.active {
-      background: var(--accent);
-      color: var(--accent-fg);
-      border-color: var(--accent);
-    }
-    .grid-main {
-      display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 14px;
-    }
-    @media (max-width: 920px) {
-      .grid-main { grid-template-columns: 1fr; }
-    }
+    .tab-btn.active { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+    .grid-main { display: grid; grid-template-columns: 1fr 380px; gap: 12px; align-items: start; }
+    @media (max-width: 960px) { .grid-main { grid-template-columns: 1fr; } }
     .viewport-card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -73,14 +62,12 @@
     }
     #glCanvas {
       width: 100%;
-      height: 520px;
+      height: 580px;
       display: block;
       cursor: grab;
       touch-action: none;
     }
-    @media (max-width: 640px) {
-      #glCanvas { height: 390px; }
-    }
+    @media (max-width: 640px) { #glCanvas { height: 400px; } }
     #glCanvas:active { cursor: grabbing; }
     .cam-bar {
       position: absolute;
@@ -89,21 +76,23 @@
       right: 12px;
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 5px;
       pointer-events: none;
     }
-    .cam-btn {
+    .cam-btn, .preset-btn {
       pointer-events: auto;
       padding: 6px 10px;
       border-radius: 7px;
       font-size: 11.5px;
-      background: rgba(22, 20, 18, 0.86);
+      background: rgba(20, 18, 16, 0.88);
       backdrop-filter: blur(6px);
       border: 1px solid var(--border);
       color: var(--text);
       cursor: pointer;
     }
-    .cam-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .cam-btn:hover, .preset-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .preset-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+    .preset-btn { text-align: center; padding: 6px 4px; font-weight: 600; background: var(--card-alt); }
     .status-pill {
       position: absolute;
       bottom: 12px;
@@ -111,8 +100,8 @@
       right: 12px;
       padding: 6px 11px;
       border-radius: 7px;
-      font-size: 11.5px;
-      background: rgba(15, 13, 12, 0.84);
+      font-size: 11px;
+      background: rgba(12, 11, 10, 0.86);
       border: 1px solid var(--border);
       color: var(--muted);
       font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -122,26 +111,40 @@
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 16px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      font-size: 12.5px;
+      gap: 10px;
+      font-size: 12px;
+      max-height: 580px;
+      overflow-y: auto;
+    }
+    @media (max-width: 960px) { .panel { max-height: none; } }
+    .sec-box {
+      background: var(--card-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
     }
     .sec-title {
       font-weight: 700;
       color: var(--accent);
-      font-size: 12.5px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .ctrl-group { display: flex; flex-direction: column; gap: 4px; }
-    .ctrl-label { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; }
+    .ctrl-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .ctrl-group { display: flex; flex-direction: column; gap: 2px; }
+    .ctrl-label { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; }
     .ctrl-val { color: var(--text); font-family: ui-monospace, monospace; }
-    input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; }
-    .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-top: 6px; }
+    input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; height: 16px; }
+    .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
     .btn {
-      padding: 9px 10px;
+      padding: 8.5px 10px;
       border-radius: 8px;
       font-size: 12px;
       font-weight: 600;
@@ -154,23 +157,12 @@
     .btn-sec { background: var(--card-alt); color: var(--text); }
     .hidden { display: none !important; }
     .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
-    .img-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
-    }
+    .img-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
     .img-card img { width: 100%; display: block; aspect-ratio: 16/9; object-fit: cover; }
     .img-cap { padding: 12px 14px; }
     .img-cap h3 { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
     .img-cap p { font-size: 12px; color: var(--muted); }
-    .plaque-box {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px;
-      margin-top: 4px;
-    }
+    .plaque-box { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-top: 4px; }
     .plaque-box h2 { font-size: 15px; color: var(--accent); margin-bottom: 8px; }
     .plaque-box p { font-size: 13px; color: var(--text); line-height: 1.7; margin-bottom: 8px; }
   </style>
@@ -180,7 +172,7 @@
     <header class="header">
       <div class="title-wrap">
         <h1>전투기 오폭 파손 성물 — 세례·축복 디오라마 3D 모형 & 전시 시안</h1>
-        <p>마우스 드래그 또는 스마트폰 손가락 터치로 360° 회전 · 핀치 줌 · 블렌더(.OBJ) 실시간 추출 지원</p>
+        <p>마우스 드래그 · 스마트폰 터치 360° 회전 · 가시 면류관 & 장미 화관 높이·기울기·위치 개별 조절 · 블렌더(.OBJ) 추출</p>
       </div>
       <div class="tabs">
         <button id="tabBtn3d" class="tab-btn active">실시간 3D 모형 스튜디오</button>
@@ -200,50 +192,140 @@
           <button data-cam="quarter" class="cam-btn">3/4 입체 뷰</button>
         </div>
         <div id="statusBadge" class="status-pill">
-          좌상단 예수님 왼손: 손바닥 바닥 방향(0°) · 우하단 성모님 합장손: 52° 상향 · 총높이 1,200mm
+          예수님 왼손: 손바닥 하향(0°) · 합장손: 52° · 가시면류관: 83cm · 장미화관: 83cm
         </div>
       </div>
 
       <aside class="panel">
-        <div class="sec-title">1. 예수님 파손 왼손 유물 (좌상단 세례·축복)</div>
-        <div class="ctrl-group">
-          <div class="ctrl-label"><span>손목 회전 (손바닥 바닥 방향)</span><span id="valWristRoll" class="ctrl-val">0° (정하향)</span></div>
-          <input id="slWristRoll" type="range" min="-75" max="75" value="0" />
-        </div>
-        <div class="ctrl-group">
-          <div class="ctrl-label"><span>세례 하향 기울기 (↘)</span><span id="valLeftPitch" class="ctrl-val">-28°</span></div>
-          <input id="slLeftPitch" type="range" min="-55" max="-5" value="-28" />
-        </div>
-        <div class="ctrl-group">
-          <div class="ctrl-label"><span>허공 현수 높이</span><span id="valLeftHeight" class="ctrl-val">114 cm</span></div>
-          <input id="slLeftHeight" type="range" min="100" max="124" value="114" />
-        </div>
-
-        <div class="sec-title">2. 성모님 파손 합장 손 유물 (우하단 기도)</div>
-        <div class="ctrl-group">
-          <div class="ctrl-label"><span>손끝 세움 각도 (↖)</span><span id="valPrayAngle" class="ctrl-val">52°</span></div>
-          <input id="slPrayAngle" type="range" min="25" max="75" value="52" />
-        </div>
-        <div class="ctrl-group">
-          <div class="ctrl-label"><span>좌우 간격 조절</span><span id="valSpread" class="ctrl-val">100%</span></div>
-          <input id="slSpread" type="range" min="60" max="140" value="100" />
+        <!-- Quick Layout Presets -->
+        <div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:5px;display:flex;justify-content:space-between;">
+            <span>빠른 배치 프리셋</span>
+            <button id="btnReset" style="background:none;border:none;color:var(--accent);text-decoration:underline;cursor:pointer;font-size:11px;">전체 기본값 복원</button>
+          </div>
+          <div class="preset-row">
+            <button data-preset="split" class="preset-btn">① 좌우 분리 기본</button>
+            <button data-preset="floatThorn" class="preset-btn">② 가시관 공중부양</button>
+            <button data-preset="nested" class="preset-btn">③ 화관·가시관 중첩</button>
+          </div>
         </div>
 
-        <div class="sec-title">3. 디오라마 단 · 유리함 · 조명</div>
-        <div class="ctrl-group">
-          <div class="ctrl-label"><span>내부 붉은 벨벳 단 높이</span><span id="valRedH" class="ctrl-val">7.5 cm</span></div>
-          <input id="slRedH" type="range" min="4" max="18" step="0.5" value="7.5" />
+        <!-- 1. Left Hand Relic -->
+        <div class="sec-box">
+          <div class="sec-title"><span>1. 예수님 파손 왼손 (좌상단 세례·축복)</span></div>
+          <div class="ctrl-group">
+            <div class="ctrl-label"><span>손목 회전 (손바닥 바닥 방향)</span><span id="valWristRoll" class="ctrl-val">0° (정하향)</span></div>
+            <input id="slWristRoll" type="range" min="-75" max="75" value="0" />
+          </div>
+          <div class="ctrl-row">
+            <div class="ctrl-group">
+              <div class="ctrl-label"><span>하향 기울기</span><span id="valLeftPitch" class="ctrl-val">-28°</span></div>
+              <input id="slLeftPitch" type="range" min="-55" max="-5" value="-28" />
+            </div>
+            <div class="ctrl-group">
+              <div class="ctrl-label"><span>손 높이</span><span id="valLeftHeight" class="ctrl-val">113 cm</span></div>
+              <input id="slLeftHeight" type="range" min="92" max="122" value="113" />
+            </div>
+          </div>
         </div>
-        <div class="ctrl-group">
-          <div class="ctrl-label"><span>하부 상향 조명 밝기</span><span id="valUplight" class="ctrl-val">120%</span></div>
-          <input id="slUplight" type="range" min="20" max="200" value="120" />
+
+        <!-- 2. Right Praying Hands Relic -->
+        <div class="sec-box">
+          <div class="sec-title"><span>2. 성모님 파손 합장 손 (우하단 기도)</span></div>
+          <div class="ctrl-row">
+            <div class="ctrl-group">
+              <div class="ctrl-label"><span>세움 각도 (↖)</span><span id="valPrayAngle" class="ctrl-val">52°</span></div>
+              <input id="slPrayAngle" type="range" min="25" max="75" value="52" />
+            </div>
+            <div class="ctrl-group">
+              <div class="ctrl-label"><span>손 높이 보정</span><span id="valPrayLift" class="ctrl-val">+0.0 cm</span></div>
+              <input id="slPrayLift" type="range" min="-3" max="16" step="0.5" value="0" />
+            </div>
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label"><span>두 손 좌우 간격</span><span id="valSpread" class="ctrl-val">100%</span></div>
+            <input id="slSpread" type="range" min="55" max="135" value="100" />
+          </div>
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:2px;">
-          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--muted);font-size:12px;">
-            <input id="chkGlass" type="checkbox" checked style="accent-color:var(--accent);" />
-            투명 유리함 & 현수 실 표시
-          </label>
-          <button id="btnReset" style="background:none;border:none;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:12px;">초기화</button>
+
+        <!-- 3. Crown of Thorns (Independent 3D Model & Sliders!) -->
+        <div class="sec-box">
+          <div class="sec-title">
+            <span>3. 가시 면류관 3D 모형</span>
+            <label style="font-weight:400;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;cursor:pointer;">
+              <input id="chkThorn" type="checkbox" checked style="accent-color:var(--accent);" />표시
+            </label>
+          </div>
+          <div class="ctrl-row">
+            <div class="ctrl-group">
+              <div class="ctrl-label"><span>면류관 높이</span><span id="valThornH" class="ctrl-val">+0.5 cm</span></div>
+              <input id="slThornH" type="range" min="0" max="30" step="0.5" value="0.5" />
+            </div>
+            <div class="ctrl-group">
+              <div class="ctrl-label"><span>기울기 (사선)</span><span id="valThornTilt" class="ctrl-val">0°</span></div>
+              <input id="slThornTilt" type="range" min="-65" max="65" value="0" />
+            </div>
+          </div>
+          <div class="ctrl-row">
+            <div class="ctrl-group">
+              <div class="ctrl-label"><span>좌우 이동(X)</span><span id="valThornX" class="ctrl-val">-9.5 cm</span></div>
+              <input id="slThornX" type="range" min="-16" max="16" step="0.5" value="-9.5" />
+            </div>
+            <div class="ctrl-group">
+              <div class="ctrl-label"><span>크기 배율</span><span id="valThornScale" class="ctrl-val">100%</span></div>
+              <input id="slThornScale" type="range" min="65" max="140" value="100" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Rose Wreath / Floral Crown (Independent 3D Model & Sliders!) -->
+        <div class="sec-box">
+          <div class="sec-title">
+            <span>4. 장미 화관 3D 모형</span>
+            <label style="font-weight:400;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;cursor:pointer;">
+              <input id="chkRose" type="checkbox" checked style="accent-color:var(--accent);" />표시
+            </label>
+          </div>
+          <div class="ctrl-row">
+            <div class="ctrl-group">
+              <div class="ctrl-label"><span>화관 높이</span><span id="valRoseH" class="ctrl-val">+0.5 cm</span></div>
+              <input id="slRoseH" type="range" min="0" max="28" step="0.5" value="0.5" />
+            </div>
+            <div class="ctrl-group">
+              <div class="ctrl-label"><span>기울기 (사선)</span><span id="valRoseTilt" class="ctrl-val">12°</span></div>
+              <input id="slRoseTilt" type="range" min="-65" max="65" value="12" />
+            </div>
+          </div>
+          <div class="ctrl-row">
+            <div class="ctrl-group">
+              <div class="ctrl-label"><span>좌우 이동(X)</span><span id="valRoseX" class="ctrl-val">+9.5 cm</span></div>
+              <input id="slRoseX" type="range" min="-16" max="16" step="0.5" value="9.5" />
+            </div>
+            <div class="ctrl-group">
+              <div class="ctrl-label"><span>크기 배율</span><span id="valRoseScale" class="ctrl-val">100%</span></div>
+              <input id="slRoseScale" type="range" min="65" max="140" value="100" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Base, Glass & Lighting -->
+        <div class="sec-box">
+          <div class="sec-title">
+            <span>5. 붉은 벨벳 단 · 유리함 · 상향 조명</span>
+            <label style="font-weight:400;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;cursor:pointer;">
+              <input id="chkGlass" type="checkbox" checked style="accent-color:var(--accent);" />유리·실
+            </label>
+          </div>
+          <div class="ctrl-row">
+            <div class="ctrl-group">
+              <div class="ctrl-label"><span>붉은 단 높이</span><span id="valRedH" class="ctrl-val">7.5 cm</span></div>
+              <input id="slRedH" type="range" min="4" max="18" step="0.5" value="7.5" />
+            </div>
+            <div class="ctrl-group">
+              <div class="ctrl-label"><span>상향 조명 밝기</span><span id="valUplight" class="ctrl-val">125%</span></div>
+              <input id="slUplight" type="range" min="20" max="200" value="125" />
+            </div>
+          </div>
         </div>
 
         <div class="action-row">
@@ -291,15 +373,14 @@
 
       <div class="plaque-box">
         <h2>전시 캡션 명패 문안 — 〈부서진 두 손, 멈추지 않은 축복 (Broken Hands, Unbroken Blessing)〉</h2>
-        <p><strong>규격 및 재료:</strong> 2025년 전투기 오폭 사고 현장에서 수습된 예수 그리스도상·성모 마리아상의 실제 손 잔해 2점(무복원 원형 보존), 가시 면류관과 장미, 전례용 홍색 벨벳, 다크 월넛 원목 좌대와 무반사 조명 유리함 (50 × 42 × 120 cm)</p>
-        <p>훈련 중이던 전투기의 오폭 충격으로 성상의 몸체가 부서진 현장에서 기적처럼 수습된 두 점의 성물 파편입니다. 인위적 복원을 거치지 않은 파단면 그대로, 우측 장미 위에서 하늘을 향해 겸손히 모아진 성모 마리아의 합장한 손과 좌측 상단에서 손바닥을 아래로 향한 채 세례와 강복을 내리듯 덮어주는 예수 그리스도의 상처 입은 왼손이 마주합니다. 포탄이 할퀴고 간 상흔조차 서로를 향한 기도와 축복의 손길로 바꾸어 내는 평화의 증언입니다.</p>
+        <p><strong>규격 및 재료:</strong> 2025년 전투기 오폭 사고 현장에서 수습된 예수 그리스도상·성모 마리아상의 실제 손 잔해 2점(무복원 원형 보존), 가시 면류관과 장미 화관, 전례용 홍색 벨벳, 다크 월넛 원목 좌대와 무반사 조명 유리함 (50 × 42 × 120 cm)</p>
+        <p>훈련 중이던 전투기의 오폭 충격으로 성상의 몸체가 부서진 현장에서 기적처럼 수습된 두 점의 성물 파편입니다. 인위적 복원을 거치지 않은 파단면 그대로, 우측 장미 화관 위에서 하늘을 향해 겸손히 모아진 성모 마리아의 합장한 손과 좌측 상단에서 손바닥을 아래로 향한 채 세례와 강복을 내리듯 덮어주는 예수 그리스도의 상처 입은 왼손이 마주합니다. 포탄이 할퀴고 간 상흔조차 서로를 향한 기도와 축복의 손길로 바꾸어 내는 평화의 증언입니다.</p>
       </div>
     </section>
   </div>
 
 <script>
 (() => {
-  // Tab switching
   const tabBtn3d = document.getElementById('tabBtn3d');
   const tabBtnRenders = document.getElementById('tabBtnRenders');
   const sec3d = document.getElementById('sec3d');
@@ -340,61 +421,64 @@
   in vec4 vCol;
   uniform vec3 uCamPos;
   uniform float uUplight;
-  uniform int uMatType;
+  uniform int uMatType; // 0: plaster, 1: velvet, 2: walnut, 3: organic crown/roses, 4: crystal glass/wire, 5: emissive LED
   out vec4 fragColor;
 
   void main() {
     if (uMatType == 5) {
-      fragColor = vec4(vCol.rgb * (0.85 + 0.45 * uUplight), vCol.a);
+      fragColor = vec4(vCol.rgb * (0.9 + 0.5 * uUplight), vCol.a);
       return;
     }
     vec3 N = normalize(vNorm);
     vec3 V = normalize(uCamPos - vWorldPos);
 
     if (uMatType == 4) {
-      float fres = pow(1.0 - max(0.0, abs(dot(N, V))), 3.2);
-      vec3 gCol = mix(vec3(0.76, 0.88, 0.86), vec3(0.96, 0.98, 0.97), fres);
-      float alpha = clamp(vCol.a + fres * 0.26, 0.04, 0.42);
+      // Ultra-clear museum low-iron glass: crystal clear center, crisp Fresnel specular edge!
+      float ndv = max(0.0, abs(dot(N, V)));
+      float fres = pow(1.0 - ndv, 4.5);
+      vec3 gCol = mix(vec3(0.75, 0.90, 0.87), vec3(0.98, 0.99, 0.98), fres);
+      float alpha = clamp(vCol.a + fres * 0.22, 0.012, 0.55);
       fragColor = vec4(gCol, alpha);
       return;
     }
 
-    vec3 lTopPos = vec3(-0.08, 1.55, 0.28);
+    vec3 lTopPos = vec3(-0.10, 1.62, 0.34);
     vec3 Ltop = normalize(lTopPos - vWorldPos);
     float dTop = max(0.0, dot(N, Ltop));
-    float wrapTop = max(0.0, (dot(N, Ltop) + 0.35) / 1.35);
+    float wrapTop = max(0.0, (dot(N, Ltop) + 0.38) / 1.38);
 
-    vec3 lBotPos = vec3(0.0, 0.78, 0.08);
+    vec3 lBotPos = vec3(0.0, 0.77, 0.10);
     vec3 Lbot = normalize(lBotPos - vWorldPos);
     float distBot = length(lBotPos - vWorldPos);
-    float attenBot = 1.0 / (1.0 + 3.2 * distBot * distBot);
+    float attenBot = 1.0 / (1.0 + 2.8 * distBot * distBot);
     float dBot = max(0.0, dot(N, Lbot)) * attenBot * uUplight;
 
     vec3 base = vCol.rgb;
     if (uMatType == 2) {
-      float grain = sin(vWorldPos.x * 85.0 + sin(vWorldPos.y * 16.0) * 2.5) * 0.5 + 0.5;
-      base *= (0.80 + 0.32 * grain);
+      float grain = sin(vWorldPos.x * 90.0 + sin(vWorldPos.y * 18.0) * 2.5) * 0.5 + 0.5;
+      base *= (0.76 + 0.36 * grain);
     } else if (uMatType == 0) {
       float pit = fract(sin(dot(floor(vWorldPos * 380.0), vec3(12.9898, 78.233, 37.719))) * 43758.5453);
       if (pit > 0.94) base *= 0.86;
     }
 
-    vec3 col = base * 0.16;
+    vec3 col = base * 0.14;
     if (uMatType == 0) {
-      col += base * vec3(1.06, 0.98, 0.88) * (0.52 * dTop + 0.34 * wrapTop);
-      col += base * vec3(1.18, 0.68, 0.52) * (1.15 * dBot);
+      col += base * vec3(1.08, 0.99, 0.88) * (0.58 * dTop + 0.34 * wrapTop);
+      col += base * vec3(1.22, 0.70, 0.52) * (1.18 * dBot);
       vec3 H = normalize(Ltop + V);
-      col += vec3(0.18, 0.16, 0.14) * pow(max(0.0, dot(N, H)), 22.0);
+      col += vec3(0.20, 0.18, 0.15) * pow(max(0.0, dot(N, H)), 24.0);
     } else if (uMatType == 1) {
-      float rim = pow(1.0 - max(0.0, dot(N, V)), 2.2);
-      col += base * (0.65 * dTop + 0.55 * uUplight * 0.4) + base * 0.42 * rim;
+      float rim = pow(1.0 - max(0.0, dot(N, V)), 2.4);
+      col += base * (0.78 * dTop + 0.58 * uUplight * 0.42) + base * 0.50 * rim;
     } else {
-      col += base * vec3(1.04, 0.97, 0.89) * (0.72 * dTop + 0.45 * dBot);
+      // Rich organic shading for Crown of Thorns & Rose Wreath petals!
+      col += base * vec3(1.06, 0.98, 0.90) * (0.62 * dTop + 0.32 * wrapTop + 0.52 * dBot);
       vec3 H = normalize(Ltop + V);
-      col += vec3(0.09) * pow(max(0.0, dot(N, H)), 16.0);
+      col += vec3(0.11, 0.09, 0.08) * pow(max(0.0, dot(N, H)), 18.0);
     }
 
-    col = col / (col + vec3(0.85));
+    col = col / (col + vec3(0.78));
     col = pow(col, vec3(1.0 / 2.15));
     fragColor = vec4(col, vCol.a);
   }`;
@@ -522,6 +606,33 @@
         }
       }
     }
+    // Helper: Smooth cupped rose blossom at (cx, cy, cz) with concentric layered petals + green sepals!
+    addSculptedRose(cx, cy, cz, scale, petalCol, coreCol) {
+      // Green calyx base
+      const leafCol = [0.14, 0.22, 0.11, 1.0];
+      this.addLoftedSurface(5, 12, (u, th) => {
+        const r = 0.011 * scale * Math.sin(u * Math.PI * 0.85) * (1.0 + 0.18 * Math.cos(th * 5.0));
+        return { p: [cx + Math.cos(th)*r, cy + u * 0.008 * scale, cz + Math.sin(th)*r], c: leafCol };
+      }, false, false, leafCol, leafCol);
+
+      // 3 concentric ruffled cup rings (outer, mid, inner bud) with smooth outward normals!
+      const layers = [
+        { rMax: 0.021, hMax: 0.017, lobes: 5, ph: 0.0, col: petalCol },
+        { rMax: 0.0145, hMax: 0.020, lobes: 5, ph: 0.62, col: petalCol },
+        { rMax: 0.0085, hMax: 0.022, lobes: 4, ph: 1.25, col: coreCol }
+      ];
+      for (const L of layers) {
+        this.addLoftedSurface(8, 24, (u, th) => {
+          // u=0 bottom center -> u=1 curled petal lip!
+          const flare = Math.pow(u, 0.68);
+          const wave = 1.0 + 0.14 * Math.sin(th * L.lobes + L.ph + u * 1.4);
+          const curlOut = (u > 0.72) ? 0.0028 * Math.pow((u - 0.72)/0.28, 1.5) : 0.0;
+          const r = (L.rMax * flare * wave + curlOut) * scale;
+          const y = cy + (0.004 + L.hMax * Math.sin(u * Math.PI * 0.56) + 0.002 * Math.cos(th * L.lobes + L.ph) * u) * scale;
+          return { p: [cx + Math.cos(th)*r, y, cz + Math.sin(th)*r], c: L.col };
+        }, false, false, L.col, L.col);
+      }
+    }
     upload() {
       const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
       const mk = (loc, arr, sz) => {
@@ -536,7 +647,7 @@
     }
   }
 
-  const PLASTER = [0.89, 0.85, 0.78, 1.0], CHALK = [0.96, 0.95, 0.92, 1.0];
+  const PLASTER = [0.90, 0.86, 0.79, 1.0], CHALK = [0.97, 0.96, 0.93, 1.0];
 
   function buildLeftHandRelicMesh() {
     const mb = new MeshBuilder();
@@ -610,9 +721,121 @@
     return mb.upload();
   }
 
+  // --- INDEPENDENT 3D MODEL 1: Crown of Thorns (Centered at local (0, 0.018, 0)!) ---
+  function buildCrownOfThornsMesh() {
+    const mb = new MeshBuilder();
+    const barkDark = [0.22, 0.14, 0.09, 1.0];
+    const barkMid  = [0.28, 0.18, 0.11, 1.0];
+    const spikeTip = [0.36, 0.25, 0.16, 1.0];
+
+    // 4 intertwined braided woody vine rings
+    for (let strand=0; strand<4; strand++) {
+      const ph = strand * (Math.PI * 0.5);
+      const col = (strand % 2 === 0) ? barkDark : barkMid;
+      mb.addLoftedSurface(72, 10, (u, th) => {
+        const ang = u * Math.PI * 2.0;
+        const R = 0.082 + 0.011 * Math.sin(ang * 5.0 + ph) + 0.004 * Math.cos(ang * 11.0);
+        const cy = 0.018 + 0.010 * Math.cos(ang * 5.0 + ph);
+        const rTube = 0.0044 * (0.85 + 0.3 * Math.sin(ang * 7.0 + strand));
+        // Correct outward tube orientation around torus tangent
+        const radOff = Math.cos(th) * rTube;
+        const px = (R + radOff) * Math.cos(ang);
+        const pz = (R + radOff) * Math.sin(ang);
+        const py = cy + Math.sin(th) * rTube;
+        return { p: [px, py, pz], c: col };
+      }, false, false, col, col);
+    }
+
+    // 42 sharp radial 3D conical thorns jutting outward, upward, and inward!
+    for (let i=0; i<42; i++) {
+      const ang = (i / 42) * Math.PI * 2.0;
+      const ph = (i % 4) * (Math.PI * 0.5);
+      const R = 0.082 + 0.010 * Math.sin(ang * 5.0 + ph);
+      const bx = R * Math.cos(ang), bz = R * Math.sin(ang);
+      const by = 0.018 + 0.009 * Math.cos(ang * 5.0 + ph);
+
+      const outSign = (i % 5 === 0) ? -0.6 : 1.0;
+      const tiltA = ang + 0.32 * ((i % 2) ? 1 : -1);
+      const dx = Math.cos(tiltA) * outSign;
+      const dz = Math.sin(tiltA) * outSign;
+      const dy = (i % 3 === 0) ? 0.65 : ((i % 3 === 1) ? -0.32 : 0.22);
+      const dLen = Math.hypot(dx, dy, dz) || 1;
+      const ux = dx/dLen, uy = dy/dLen, uz = dz/dLen;
+      // Orthogonal basis for 3D cone cross-section
+      let ox = -uz, oy = 0, oz = ux;
+      const ol = Math.hypot(ox, oy, oz) || 1; ox/=ol; oz/=ol;
+      const qx = uy*oz - uz*oy, qy = uz*ox - ux*oz, qz = ux*oy - uy*ox;
+
+      const spikeLen = 0.024 + 0.008 * (i % 3);
+      mb.addLoftedSurface(5, 8, (u, th) => {
+        const r = 0.0026 * Math.pow(1.0 - u, 1.15);
+        const c = u > 0.65 ? spikeTip : barkDark;
+        const cx = bx + ux * u * spikeLen + (ox*Math.cos(th) + qx*Math.sin(th)) * r;
+        const cy_ = by + uy * u * spikeLen + (oy*Math.cos(th) + qy*Math.sin(th)) * r;
+        const cz = bz + uz * u * spikeLen + (oz*Math.cos(th) + qz*Math.sin(th)) * r;
+        return { p: [cx, cy_, cz], c };
+      }, false, false, barkDark, spikeTip);
+    }
+    return mb.upload();
+  }
+
+  // --- INDEPENDENT 3D MODEL 2: Rose Wreath / Floral Crown (장미 화관, Centered at local (0, 0.015, 0)!) ---
+  function buildRoseWreathMesh() {
+    const mb = new MeshBuilder();
+    const vineCol = [0.15, 0.24, 0.12, 1.0];
+    const leafCol = [0.18, 0.30, 0.14, 1.0];
+
+    // 2 intertwined lush botanical wreath stems forming the floral crown ring (majorR = 0.076)
+    for (let s=0; s<2; s++) {
+      const ph = s * Math.PI;
+      mb.addLoftedSurface(60, 10, (u, th) => {
+        const ang = u * Math.PI * 2.0;
+        const R = 0.075 + 0.006 * Math.sin(ang * 6.0 + ph);
+        const cy = 0.012 + 0.005 * Math.cos(ang * 6.0 + ph);
+        const rTube = 0.0042;
+        const px = (R + Math.cos(th)*rTube) * Math.cos(ang);
+        const pz = (R + Math.cos(th)*rTube) * Math.sin(ang);
+        const py = cy + Math.sin(th)*rTube;
+        return { p: [px, py, pz], c: vineCol };
+      }, false, false, vineCol, vineCol);
+    }
+
+    // Botanical rose leaves tucked around the floral crown
+    for (let i=0; i<18; i++) {
+      const ang = (i / 18) * Math.PI * 2.0 + 0.15;
+      const side = (i % 2 === 0) ? 1.0 : -0.75;
+      const bx = 0.076 * Math.cos(ang), bz = 0.076 * Math.sin(ang);
+      mb.addLoftedSurface(6, 8, (u, th) => {
+        const w = 0.009 * Math.sin(u * Math.PI);
+        const lx = bx + Math.cos(ang)*side*u*0.026 - Math.sin(ang)*Math.cos(th)*w;
+        const lz = bz + Math.sin(ang)*side*u*0.026 + Math.cos(ang)*Math.cos(th)*w;
+        const ly = 0.012 + 0.005 * Math.sin(u * Math.PI) + Math.sin(th)*0.0012;
+        return { p: [lx, ly, lz], c: leafCol };
+      }, false, false, leafCol, leafCol);
+    }
+
+    // 9 Lush Sculpted Roses arranged around the Floral Wreath (Crimson Velvet & Antique Ivory Roses!)
+    const crimsonOuter = [0.62, 0.06, 0.11, 1.0], crimsonCore = [0.42, 0.03, 0.06, 1.0];
+    const ivoryOuter   = [0.91, 0.86, 0.77, 1.0], ivoryCore   = [0.82, 0.74, 0.63, 1.0];
+
+    for (let i=0; i<9; i++) {
+      const ang = (i / 9) * Math.PI * 2.0 + 0.2;
+      const R = 0.075 + ((i % 2 === 0) ? 0.004 : -0.003);
+      const rx = R * Math.cos(ang), rz = R * Math.sin(ang);
+      const isCrimson = (i % 2 === 0);
+      const sc = 0.92 + 0.18 * ((i * 7) % 3) * 0.5;
+      mb.addSculptedRose(
+        rx, 0.012, rz, sc,
+        isCrimson ? crimsonOuter : ivoryOuter,
+        isCrimson ? crimsonCore  : ivoryCore
+      );
+    }
+    return mb.upload();
+  }
+
   function buildWalnutStandMesh() {
     const mb = new MeshBuilder();
-    const W = 0.50, D = 0.42, H = 0.75, wd = [0.22, 0.13, 0.08, 1.0], wt = [0.17, 0.10, 0.06, 1.0];
+    const W = 0.50, D = 0.42, H = 0.75, wd = [0.22, 0.13, 0.08, 1.0], wt = [0.16, 0.09, 0.05, 1.0];
     mb.addBox(0, H/2, 0, W, H, D, wd);
     mb.addBox(0, H - 0.018, 0, W + 0.018, 0.036, D + 0.018, wt);
     mb.addBox(0, 0.02, 0, W - 0.02, 0.04, D - 0.02, wt);
@@ -623,9 +846,14 @@
     return mb.upload();
   }
 
-  function buildVelvetMesh() { const mb = new MeshBuilder(); mb.addBox(0, 0.5, 0, 0.43, 1.0, 0.35, [0.52, 0.05, 0.08, 1.0]); return mb.upload(); }
+  function buildVelvetMesh() {
+    const mb = new MeshBuilder();
+    mb.addBox(0, 0.5, 0, 0.43, 1.0, 0.35, [0.58, 0.05, 0.08, 1.0]);
+    return mb.upload();
+  }
+
   function buildUplightStripMesh() {
-    const mb = new MeshBuilder(), glow = [1.0, 0.76, 0.42, 1.0];
+    const mb = new MeshBuilder(), glow = [1.0, 0.78, 0.44, 1.0];
     mb.addBox(0, 0.753,  0.182, 0.45, 0.005, 0.008, glow);
     mb.addBox(0, 0.753, -0.182, 0.45, 0.005, 0.008, glow);
     mb.addBox(-0.222, 0.753, 0, 0.008, 0.005, 0.36, glow);
@@ -633,62 +861,48 @@
     return mb.upload();
   }
 
-  function buildThornsAndRosesMesh() {
-    const mb = new MeshBuilder(), thornCol = [0.20, 0.14, 0.10, 1.0];
-    for (let strand=0; strand<3; strand++) {
-      const ph = strand * 2.094;
-      mb.addLoftedSurface(56, 8, (u, th) => {
-        const ang = u * Math.PI * 2.0, R = 0.078 + 0.009 * Math.sin(ang * 5.0 + ph);
-        const cy = 0.018 + 0.008 * Math.cos(ang * 5.0 + ph), rTube = 0.0038;
-        return { p: [-0.095 + (R + Math.cos(th)*rTube)*Math.cos(ang), cy + Math.sin(th)*rTube, 0.010 + (R + Math.cos(th)*rTube)*Math.sin(ang)], c: thornCol };
-      }, false, false, thornCol, thornCol);
-    }
-    for (let i=0; i<28; i++) {
-      const ang = (i / 28) * Math.PI * 2.0, bx = -0.095 + 0.080 * Math.cos(ang), bz = 0.010 + 0.080 * Math.sin(ang), by = 0.020 + 0.006 * Math.sin(i * 2.1);
-      const dirX = Math.cos(ang + 0.35 * ((i%2)?1:-1)), dirZ = Math.sin(ang + 0.35 * ((i%2)?1:-1)), dirY = (i % 3 === 0) ? 0.55 : -0.25;
-      mb.addLoftedSurface(4, 6, (u, th) => {
-        const r = 0.0022 * (1.0 - u);
-        return { p: [bx + dirX*u*0.022 + Math.cos(th)*r, by + dirY*u*0.022 + Math.sin(th)*r, bz + dirZ*u*0.022], c: thornCol };
-      }, false, false, thornCol, thornCol);
-    }
-    const roses = [
-      { x: 0.062, z: 0.038, col: [0.56, 0.07, 0.11, 1.0], sc: 1.05 },
-      { x: 0.106, z: 0.044, col: [0.86, 0.81, 0.72, 1.0], sc: 0.92 },
-      { x: 0.138, z: 0.010, col: [0.84, 0.79, 0.70, 1.0], sc: 0.95 },
-      { x: 0.082, z:-0.028, col: [0.50, 0.06, 0.09, 1.0], sc: 0.90 }
-    ];
-    for (const rs of roses) {
-      for (let p=0; p<10; p++) {
-        const a0 = p * 1.95, rad = (0.008 + p * 0.0018) * rs.sc;
-        mb.addLoftedSurface(6, 8, (u, th) => {
-          const ang = a0 + (u - 0.5) * 1.35, h = 0.022 * rs.sc * Math.sin(th * 0.5), rr = rad + 0.003 * Math.cos(th);
-          return { p: [rs.x + rr * Math.cos(ang), 0.006 + h, rs.z + rr * Math.sin(ang)], c: rs.col };
-        }, false, false, rs.col, rs.col);
-      }
-    }
-    return mb.upload();
-  }
-
   function buildGlassBoxMesh() {
     const mb = new MeshBuilder(), W = 0.48, D = 0.40, H = 0.45, cy = 0.75 + H/2;
-    const gEdge = [0.72, 0.88, 0.84, 0.22], gPane = [0.85, 0.93, 0.91, 0.07];
-    mb.addBox(0, cy,  D/2, W, H, 0.004, gPane); mb.addBox(0, cy, -D/2, W, H, 0.004, gPane);
-    mb.addBox(-W/2, cy, 0, 0.004, H, D, gPane); mb.addBox( W/2, cy, 0, 0.004, H, D, gPane);
-    mb.addBox(0, 0.75 + H, 0, W, 0.006, D, gEdge);
+    // Ultra-clear museum glass panes + crisp polished 4mm glass corner bevel bars!
+    const gPane = [0.85, 0.94, 0.92, 0.016];
+    const gCorner = [0.78, 0.93, 0.89, 0.36];
+    mb.addBox(0, cy,  D/2, W, H, 0.003, gPane);
+    mb.addBox(0, cy, -D/2, W, H, 0.003, gPane);
+    mb.addBox(-W/2, cy, 0, 0.003, H, D, gPane);
+    mb.addBox( W/2, cy, 0, 0.003, H, D, gPane);
+    // Polished glass edges (so box outline reads cleanly without fogging the interior!)
+    for (const sx of [-W/2, W/2]) for (const sz of [-D/2, D/2]) mb.addBox(sx, cy, sz, 0.004, H, 0.004, gCorner);
+    for (const sz of [-D/2, D/2]) mb.addBox(0, 0.75 + H, sz, W, 0.005, 0.005, gCorner);
+    for (const sx of [-W/2, W/2]) mb.addBox(sx, 0.75 + H, 0, 0.005, 0.005, D, gCorner);
     return mb.upload();
   }
-  function buildWireMesh() { const mb = new MeshBuilder(); mb.addBox(0, 0.5, 0, 0.0012, 1.0, 0.0012, [0.88, 0.90, 0.92, 0.30]); return mb.upload(); }
 
-  const meshLeftHand = buildLeftHandRelicMesh(), meshPrayHands = buildPrayingHandsRelicMesh();
-  const meshStand = buildWalnutStandMesh(), meshVelvet = buildVelvetMesh(), meshUplight = buildUplightStripMesh();
-  const meshDecor = buildThornsAndRosesMesh(), meshGlass = buildGlassBoxMesh(), meshWire = buildWireMesh();
+  function buildWireMesh() {
+    const mb = new MeshBuilder();
+    mb.addBox(0, 0.5, 0, 0.0012, 1.0, 0.0012, [0.90, 0.92, 0.94, 0.28]);
+    return mb.upload();
+  }
+
+  const meshLeftHand = buildLeftHandRelicMesh();
+  const meshPrayHands = buildPrayingHandsRelicMesh();
+  const meshCrownOfThorns = buildCrownOfThornsMesh();
+  const meshRoseWreath = buildRoseWreathMesh();
+  const meshStand = buildWalnutStandMesh();
+  const meshVelvet = buildVelvetMesh();
+  const meshUplight = buildUplightStripMesh();
+  const meshGlass = buildGlassBoxMesh();
+  const meshWire = buildWireMesh();
 
   const state = {
-    yaw: 0.06, pitch: 0.07, dist: 0.92, target: [0.0, 1.01, 0.0],
-    wristRoll: 0, leftPitch: -28, leftHeight: 1.14, prayAngle: 52, spread: 1.0, redH: 0.075, uplight: 1.20, showGlass: true
+    yaw: 0.06, pitch: 0.08, dist: 0.90, target: [0.0, 1.00, 0.0],
+    wristRoll: 0, leftPitch: -28, leftHeight: 1.13,
+    prayAngle: 52, prayLift: 0.0, spread: 1.0,
+    showThorn: true, thornH: 0.005, thornTilt: 0, thornX: -0.095, thornScale: 1.0,
+    showRose: true, roseH: 0.005, roseTilt: 12, roseX: 0.095, roseScale: 1.0,
+    redH: 0.075, uplight: 1.25, showGlass: true
   };
 
-  // PC Mouse + Mobile Touch Orbit & Pinch Zoom!
+  // Mouse & Touch Controls
   let dragging = false, panMode = false, lx = 0, ly = 0, pinchDist0 = 0;
   canvas.addEventListener('contextmenu', e => e.preventDefault());
   canvas.addEventListener('mousedown', e => { dragging = true; panMode = (e.button === 2 || e.shiftKey); lx = e.clientX; ly = e.clientY; });
@@ -723,53 +937,111 @@
   }, { passive: false });
   canvas.addEventListener('touchend', () => { dragging = false; pinchDist0 = 0; });
 
+  function updateStatus() {
+    const thCm = Math.round((0.75 + state.redH + state.thornH) * 100);
+    const rsCm = Math.round((0.75 + state.redH + state.roseH) * 100);
+    document.getElementById('statusBadge').textContent =
+      `예수님 왼손: 손바닥 하향(${state.wristRoll}°) · 합장손: ${state.prayAngle}° · 가시면류관: ${thCm}cm(${state.thornTilt}°) · 장미화관: ${rsCm}cm(${state.roseTilt}°)`;
+  }
+
   const bindSlider = (id, key, scale, fmt) => {
     const el = document.getElementById(id), out = document.getElementById('val' + id.slice(2));
     el.addEventListener('input', () => {
-      state[key] = parseFloat(el.value) * scale; out.textContent = fmt(parseFloat(el.value));
-      document.getElementById('statusBadge').textContent = `좌상단 예수님 손: 손목회전 ${state.wristRoll}° (손바닥 하향) · 세례각 ${state.leftPitch}° · 우하단 합장손: ${state.prayAngle}° 상향`;
+      state[key] = parseFloat(el.value) * scale;
+      out.textContent = fmt(parseFloat(el.value));
+      updateStatus();
     });
   };
-  bindSlider('slWristRoll', 'wristRoll', 1, v => `${v}° (${Math.abs(v)<=12?'정하향':(v>0?'전방회전':'후방회전')})`);
+  bindSlider('slWristRoll', 'wristRoll', 1, v => `${v}° (${Math.abs(v)<=12?'정하향':(v>0?'전방':'후방')})`);
   bindSlider('slLeftPitch', 'leftPitch', 1, v => `${v}°`);
   bindSlider('slLeftHeight', 'leftHeight', 0.01, v => `${v} cm`);
   bindSlider('slPrayAngle', 'prayAngle', 1, v => `${v}°`);
+  bindSlider('slPrayLift', 'prayLift', 0.01, v => `${v>=0?'+':''}${v.toFixed(1)} cm`);
   bindSlider('slSpread', 'spread', 0.01, v => `${v}%`);
-  bindSlider('slRedH', 'redH', 0.01, v => `${v} cm`);
-  bindSlider('slUplight', 'uplight', 0.01, v => `${v}%`);
-  document.getElementById('chkGlass').addEventListener('change', e => state.showGlass = e.target.checked);
 
-  const presets = {
-    closeup: { yaw: 0.05, pitch: 0.06, dist: 0.88, target: [0.0, 1.00, 0.0] },
+  bindSlider('slThornH', 'thornH', 0.01, v => `+${v.toFixed(1)} cm`);
+  bindSlider('slThornTilt', 'thornTilt', 1, v => `${v}°`);
+  bindSlider('slThornX', 'thornX', 0.01, v => `${v>=0?'+':''}${v.toFixed(1)} cm`);
+  bindSlider('slThornScale', 'thornScale', 0.01, v => `${v}%`);
+
+  bindSlider('slRoseH', 'roseH', 0.01, v => `+${v.toFixed(1)} cm`);
+  bindSlider('slRoseTilt', 'roseTilt', 1, v => `${v}°`);
+  bindSlider('slRoseX', 'roseX', 0.01, v => `${v>=0?'+':''}${v.toFixed(1)} cm`);
+  bindSlider('slRoseScale', 'roseScale', 0.01, v => `${v}%`);
+
+  bindSlider('slRedH', 'redH', 0.01, v => `${v.toFixed(1)} cm`);
+  bindSlider('slUplight', 'uplight', 0.01, v => `${v}%`);
+
+  document.getElementById('chkGlass').addEventListener('change', e => state.showGlass = e.target.checked);
+  document.getElementById('chkThorn').addEventListener('change', e => state.showThorn = e.target.checked);
+  document.getElementById('chkRose').addEventListener('change', e => state.showRose = e.target.checked);
+
+  function applySliderValues(vals) {
+    for (const [id, v] of Object.entries(vals)) {
+      const el = document.getElementById(id);
+      if (el) { el.value = v; el.dispatchEvent(new Event('input')); }
+    }
+  }
+
+  // 3 Sculpture Layout Presets!
+  const layoutPresets = {
+    split: {
+      slWristRoll: 0, slLeftPitch: -28, slLeftHeight: 113, slPrayAngle: 52, slPrayLift: 0, slSpread: 100,
+      slThornH: 0.5, slThornTilt: 0, slThornX: -9.5, slThornScale: 100,
+      slRoseH: 0.5, slRoseTilt: 12, slRoseX: 9.5, slRoseScale: 100, slRedH: 7.5
+    },
+    floatThorn: {
+      slWristRoll: 0, slLeftPitch: -26, slLeftHeight: 115, slPrayAngle: 54, slPrayLift: 1.5, slSpread: 95,
+      slThornH: 21.0, slThornTilt: -24, slThornX: -6.5, slThornScale: 95,
+      slRoseH: 1.0, slRoseTilt: 18, slRoseX: 9.0, slRoseScale: 105, slRedH: 7.5
+    },
+    nested: {
+      slWristRoll: 0, slLeftPitch: -30, slLeftHeight: 114, slPrayAngle: 55, slPrayLift: 2.0, slSpread: 92,
+      slThornH: 1.0, slThornTilt: -18, slThornX: 7.5, slThornScale: 112,
+      slRoseH: 4.5, slRoseTilt: 22, slRoseX: 8.5, slRoseScale: 92, slRedH: 7.5
+    }
+  };
+  document.querySelectorAll('[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => applySliderValues(layoutPresets[btn.dataset.preset]));
+  });
+
+  const camPresets = {
+    closeup: { yaw: 0.05, pitch: 0.08, dist: 0.88, target: [0.0, 1.00, 0.0] },
     full:    { yaw: 0.04, pitch: 0.08, dist: 1.95, target: [0.0, 0.64, 0.0] },
     under:   { yaw: 0.22, pitch:-0.42, dist: 0.72, target: [-0.02, 1.05, 0.0] },
     side:    { yaw: 1.48, pitch: 0.05, dist: 0.95, target: [0.0, 1.00, 0.0] },
-    quarter: { yaw: 0.52, pitch: 0.22, dist: 1.05, target: [0.0, 0.98, 0.0] }
+    quarter: { yaw: 0.52, pitch: 0.24, dist: 1.04, target: [0.0, 0.98, 0.0] }
   };
   document.querySelectorAll('.cam-btn').forEach(btn => {
-    btn.addEventListener('click', () => { const p = presets[btn.dataset.cam]; state.yaw=p.yaw; state.pitch=p.pitch; state.dist=p.dist; state.target=[...p.target]; });
+    btn.addEventListener('click', () => { const p = camPresets[btn.dataset.cam]; state.yaw=p.yaw; state.pitch=p.pitch; state.dist=p.dist; state.target=[...p.target]; });
   });
   document.getElementById('btnReset').addEventListener('click', () => {
-    [['slWristRoll',0],['slLeftPitch',-28],['slLeftHeight',114],['slPrayAngle',52],['slSpread',100],['slRedH',7.5],['slUplight',120]].forEach(([id,v]) => {
-      const el = document.getElementById(id); el.value = v; el.dispatchEvent(new Event('input'));
-    });
-    Object.assign(state, { ...presets.closeup, target: [...presets.closeup.target] });
+    applySliderValues(layoutPresets.split);
+    Object.assign(state, { ...camPresets.closeup, target: [...camPresets.closeup.target] });
   });
 
   function getSceneTransforms() {
     const velvetTop = 0.75 + state.redH;
     const mStand = mat4Identity();
     const mVelvet = mat4Mul(mat4Translate(0, 0.75, 0), mat4Scale(1, state.redH, 1));
-    const mDecor = mat4Translate(0, velvetTop, 0);
+
+    const mThorn = mat4Mul(
+      mat4Translate(state.thornX, velvetTop + state.thornH, 0.005),
+      mat4Mul(mat4RotZ(state.thornTilt * Math.PI / 180.0), mat4Scale(state.thornScale, state.thornScale, state.thornScale))
+    );
+    const mRose = mat4Mul(
+      mat4Translate(state.roseX, velvetTop + state.roseH, 0.008),
+      mat4Mul(mat4RotZ(state.roseTilt * Math.PI / 180.0), mat4Scale(state.roseScale, state.roseScale, state.roseScale))
+    );
     const mLeft = mat4Mul(
       mat4Translate(-0.082 * state.spread, state.leftHeight, 0.005),
       mat4Mul(mat4RotZ(state.leftPitch * Math.PI / 180.0), mat4RotX(state.wristRoll * Math.PI / 180.0))
     );
     const mPray = mat4Mul(
-      mat4Translate(0.098 * state.spread, velvetTop + 0.062, 0.005),
+      mat4Translate(0.095 * state.spread, velvetTop + 0.062 + state.prayLift, 0.008),
       mat4Mul(mat4RotZ((90.0 - state.prayAngle) * Math.PI / 180.0), mat4RotY(0.18))
     );
-    return { velvetTop, mStand, mVelvet, mDecor, mLeft, mPray };
+    return { velvetTop, mStand, mVelvet, mThorn, mRose, mLeft, mPray };
   }
 
   function drawMesh(mesh, modelMat, matType) {
@@ -786,7 +1058,7 @@
       const ch = Math.max(1, Math.floor(canvas.clientHeight * dpr));
       if (canvas.width !== cw || canvas.height !== ch) { canvas.width = cw; canvas.height = ch; }
       gl.viewport(0, 0, canvas.width, canvas.height);
-      gl.clearColor(0.065, 0.058, 0.054, 1.0);
+      gl.clearColor(0.055, 0.050, 0.046, 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       gl.enable(gl.DEPTH_TEST); gl.disable(gl.BLEND);
 
@@ -803,15 +1075,29 @@
       drawMesh(meshStand, tf.mStand, 2);
       drawMesh(meshVelvet, tf.mVelvet, 1);
       drawMesh(meshUplight, mat4Identity(), 5);
-      drawMesh(meshDecor, tf.mDecor, 3);
+      if (state.showThorn) drawMesh(meshCrownOfThorns, tf.mThorn, 3);
+      if (state.showRose)  drawMesh(meshRoseWreath, tf.mRose, 3);
       drawMesh(meshLeftHand, tf.mLeft, 0);
       drawMesh(meshPrayHands, tf.mPray, 0);
 
       if (state.showGlass) {
         gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false);
+        // Suspension wires for Left Hand (and for Crown of Thorns if lifted into mid-air > 4cm!)
         for (const a of [[-0.045, 0.01, 0.0], [0.005, 0.01, -0.012], [0.025, 0.005, 0.012]]) {
           const wp = transformPt(tf.mLeft, a), hWire = Math.max(0.01, 1.20 - wp[1]);
           drawMesh(meshWire, mat4Mul(mat4Translate(wp[0], wp[1], wp[2]), mat4Scale(1, hWire, 1)), 4);
+        }
+        if (state.showThorn && state.thornH > 0.04) {
+          for (const a of [[-0.075, 0.02, 0.0], [0.075, 0.02, 0.0]]) {
+            const wp = transformPt(tf.mThorn, a), hWire = Math.max(0.01, 1.20 - wp[1]);
+            drawMesh(meshWire, mat4Mul(mat4Translate(wp[0], wp[1], wp[2]), mat4Scale(1, hWire, 1)), 4);
+          }
+        }
+        if (state.showRose && state.roseH > 0.04) {
+          for (const a of [[-0.070, 0.02, 0.0], [0.070, 0.02, 0.0]]) {
+            const wp = transformPt(tf.mRose, a), hWire = Math.max(0.01, 1.20 - wp[1]);
+            drawMesh(meshWire, mat4Mul(mat4Translate(wp[0], wp[1], wp[2]), mat4Scale(1, hWire, 1)), 4);
+          }
         }
         drawMesh(meshGlass, mat4Identity(), 4);
         gl.depthMask(true); gl.disable(gl.BLEND);
@@ -824,11 +1110,15 @@
   document.getElementById('btnExportObj').addEventListener('click', () => {
     const tf = getSceneTransforms();
     const parts = [
-      ['Walnut_Stand_120cm', meshStand, tf.mStand], ['Crimson_Velvet_Altar', meshVelvet, tf.mVelvet],
-      ['Thorns_And_Roses', meshDecor, tf.mDecor], ['Relic_Left_Hand_PalmDown', meshLeftHand, tf.mLeft],
-      ['Relic_Praying_Hands', meshPrayHands, tf.mPray], ['Glass_Vitrine', meshGlass, mat4Identity()]
+      ['Walnut_Stand_120cm', meshStand, tf.mStand],
+      ['Crimson_Velvet_Altar', meshVelvet, tf.mVelvet],
+      ...(state.showThorn ? [['Crown_Of_Thorns', meshCrownOfThorns, tf.mThorn]] : []),
+      ...(state.showRose  ? [['Rose_Wreath_Floral_Crown', meshRoseWreath, tf.mRose]] : []),
+      ['Relic_Left_Hand_PalmDown', meshLeftHand, tf.mLeft],
+      ['Relic_Praying_Hands', meshPrayHands, tf.mPray],
+      ['Glass_Vitrine', meshGlass, mat4Identity()]
     ];
-    let lines = ['# Relic Baptismal Diorama 3D Model (Meters, Total Height: 1.20m)\n'], vOff = 1;
+    let lines = ['# Relic Baptismal Diorama 3D Model (Units: Meters, Total Height: 1.20m)\n'], vOff = 1;
     for (const [name, mesh, mat] of parts) {
       lines.push(`o ${name}`);
       const r = mesh.raw, nV = r.pos.length / 3;
